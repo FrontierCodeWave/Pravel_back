@@ -1,0 +1,23 @@
+server:
+  port: 9125
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+        jdbc:
+          batch_size: 30
+  profiles:
+    active: dev
+  datasource:
+    hikari:
+
+
+logging:
+  config: classpath:logback-spring.xml
+
+---

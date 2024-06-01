@@ -1,0 +1,6 @@
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false # p6spy enable
+      multiline: true
+      logging: slf4j  # sysout, slf4j, file, custom
