@@ -1,6 +1,7 @@
 package com.tour.prevel.auth.utils;
 
 import com.tour.prevel.auth.domain.User;
+import com.tour.prevel.config.JwtKeyProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,10 @@ public class JwtUtil {
 
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
-
-    @Value("${jwt.expiration.time}")
-    private long accessTokenExpTime;
+    private final JwtKeyProperties jwtKeyProperties;
 
     public String createAccessToken(User user) {
-        return createToken(user, accessTokenExpTime);
+        return createToken(user, jwtKeyProperties.getExpirationTime());
     }
 
     private String createToken(User user, long expTime) {
