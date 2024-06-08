@@ -1,43 +1,69 @@
 package com.tour.prevel.config;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
+import com.tour.prevel.auth.utils.JwtUtil;
+import com.tour.prevel.global.auth.LoginAuthenticationProvider;
+import com.tour.prevel.global.auth.handler.LoginFailureHandler;
+import com.tour.prevel.global.auth.handler.LoginSuccessHandler;
+import com.tour.prevel.global.filter.LoginAuthenticationFilter;
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtKeyProperties jwtKeyProperties;
+    private final MessageSource messageSource;
+    private final LoginAuthenticationProvider authenticationProvider;
+    private final JwtUtil jwtUtil;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    public Filter loginAuthenticationFilter(AuthenticationManager authenticationManager) {
+        LoginAuthenticationFilter authenticationFilter = new LoginAuthenticationFilter(authenticationManager, authenticationProvider);
+        authenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        authenticationFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        return authenticationFilter;
+    }
+
+    private AuthenticationSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler(jwtUtil);
+    }
+
+    private AuthenticationFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler(messageSource);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
+
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico", "/errors/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
         http
                 .httpBasic(Customizer.withDefaults())
+                .addFilterAt(loginAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
@@ -49,20 +75,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(jwtKeyProperties.getPublicKey()).privateKey(jwtKeyProperties.getPrivateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(jwtKeyProperties.getPublicKey()).build();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
