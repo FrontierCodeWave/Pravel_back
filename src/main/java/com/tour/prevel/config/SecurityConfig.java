@@ -38,6 +38,7 @@ public class SecurityConfig {
 
         http
                 .httpBasic(Customizer.withDefaults())
+                .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
