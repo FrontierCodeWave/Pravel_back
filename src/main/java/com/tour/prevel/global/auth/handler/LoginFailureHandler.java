@@ -2,7 +2,6 @@ package com.tour.prevel.global.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tour.prevel.global.auth.dto.LoginFailResponse;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.MessageSource;
@@ -12,7 +11,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.util.Assert;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
