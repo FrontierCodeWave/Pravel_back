@@ -11,8 +11,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
@@ -31,12 +31,13 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(authenticationProvider);
     }
 
-    public Filter loginAuthenticationFilter(AuthenticationManager authenticationManager) {
-        LoginAuthenticationFilter authenticationFilter = new LoginAuthenticationFilter(authenticationManager, authenticationProvider);
+    public Filter loginAuthenticationFilter()  {
+        LoginAuthenticationFilter authenticationFilter = new LoginAuthenticationFilter();
+        authenticationFilter.setAuthenticationManager(authenticationManager());
         authenticationFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         authenticationFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return authenticationFilter;
@@ -52,8 +53,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationManager authenticationManager = authenticationManager(http.getSharedObject(AuthenticationConfiguration.class));
-
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico", "/errors/**").permitAll()
@@ -63,7 +62,7 @@ public class SecurityConfig {
 
         http
                 .httpBasic(Customizer.withDefaults())
-                .addFilterAt(loginAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class)
+                .addFilterBefore(loginAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
