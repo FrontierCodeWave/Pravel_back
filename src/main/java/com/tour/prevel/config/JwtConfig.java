@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.tour.prevel.auth.utils.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 @RequiredArgsConstructor
 public class JwtConfig {
 
-    private final JwtKeyProperties jwtKeyProperties;
+    private final JwtManager jwtManager;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -28,13 +29,13 @@ public class JwtConfig {
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(jwtKeyProperties.getPublicKey()).privateKey(jwtKeyProperties.getPrivateKey()).build();
+        JWK jwk = new RSAKey.Builder(jwtManager.getPublicKey()).privateKey(jwtManager.getPrivateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(jwtKeyProperties.getPublicKey()).build();
+        return NimbusJwtDecoder.withPublicKey(jwtManager.getPublicKey()).build();
     }
 }
