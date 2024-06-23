@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Builder
 @Entity
 @Table(name = "TB_USER")
 @Getter
@@ -23,6 +25,11 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Builder
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new ArrayList<>();
