@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        if (validate(userRequest)) {
+        if (!validate(userRequest)) {
             throw new IllegalArgumentException("Email or password is empty");
         }
 
@@ -45,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Password is empty");
         }
 
-        if (Validator.isValidEmail(userRequest.email())) {
+        if (!Validator.isValidEmail(userRequest.email())) {
             throw new IllegalArgumentException("Email is invalid");
         }
 
-        if (Validator.isValidPassword(userRequest.password())) {
+        if (!Validator.isValidPassword(userRequest.password())) {
             throw new IllegalArgumentException("Password is invalid");
         }
 
@@ -64,7 +64,8 @@ public class AuthServiceImpl implements AuthService {
         return new UserResponse(save.getEmail());
     }
 
-    private boolean isEmailExists(String email) {
+    @Override
+    public boolean isEmailExists(String email) {
         return authRepository.existsById(email);
     }
 }

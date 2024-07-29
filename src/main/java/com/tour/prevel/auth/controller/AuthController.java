@@ -21,4 +21,10 @@ public class AuthController {
     public UserResponse join(@RequestBody CreateUserRequest userRequest) {
         return authService.createUser(userRequest);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("checkid/{email}")
+    public boolean checkId(@PathVariable String email) {
+        return authService.isEmailExists(email);
+    }
 }
