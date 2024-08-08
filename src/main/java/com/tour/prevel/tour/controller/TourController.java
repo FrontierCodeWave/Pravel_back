@@ -16,7 +16,7 @@ public class TourController {
     private final TourService tourService;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @PostMapping
     public TourListResponse getTourList(@RequestBody TourListRequest request) {
         return tourService.getTourList(request);
     }
