@@ -3,4 +3,4 @@ package com.tour.prevel.tour.dto;
 import lombok.Builder;
 
 @Builder
-public record TourListRequest(double x, double y) { }
+public record TourListRequest(double x, double y, Integer pageNo) { }

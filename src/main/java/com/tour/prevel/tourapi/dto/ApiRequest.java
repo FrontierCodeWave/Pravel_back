@@ -1,4 +1,4 @@
-package com.tour.prevel.tour.dto.api;
+package com.tour.prevel.tourapi.dto;
 
 import lombok.AllArgsConstructor;
 

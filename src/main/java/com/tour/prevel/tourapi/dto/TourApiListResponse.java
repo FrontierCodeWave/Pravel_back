@@ -1,4 +1,4 @@
-package com.tour.prevel.tour.dto.api;
+package com.tour.prevel.tourapi.dto;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiTourListResponse {
+public class TourApiListResponse {
 
     private Response response;
 

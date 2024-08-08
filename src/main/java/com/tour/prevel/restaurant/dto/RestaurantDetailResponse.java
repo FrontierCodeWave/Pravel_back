@@ -1,9 +1,9 @@
-package com.tour.prevel.tour.dto;
+package com.tour.prevel.restaurant.dto;
 
 import lombok.Builder;
 
 @Builder
-public record TourDetailResponse(
+public record RestaurantDetailResponse(
         String firstImage,
         String contentId,
         String title,
