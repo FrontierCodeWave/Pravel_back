@@ -1,4 +1,4 @@
-package com.tour.prevel.tour.dto.api;
+package com.tour.prevel.tourapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,16 +11,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiTourResponse {
+public class TourApiResponse {
 
-    private ApiTourListResponse.Response response;
+    private TourApiListResponse.Response response;
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private ApiTourResponse.Body body;
+        private TourApiResponse.Body body;
     }
 
     @Getter
@@ -28,7 +28,7 @@ public class ApiTourResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Body {
-        private ApiTourResponse.Items items;
+        private TourApiResponse.Items items;
     }
 
     @Getter
@@ -37,7 +37,7 @@ public class ApiTourResponse {
     @AllArgsConstructor
     public static class Items {
 
-        private List<ApiTourResponse.Item> item;
+        private List<TourApiResponse.Item> item;
     }
 
     @Getter

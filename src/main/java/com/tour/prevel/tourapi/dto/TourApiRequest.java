@@ -1,8 +1,8 @@
-package com.tour.prevel.tour.dto.api;
+package com.tour.prevel.tourapi.dto;
 
 import lombok.Builder;
 
-public class ApiTourRequest extends ApiRequest {
+public class TourApiRequest extends ApiRequest {
 
     protected final String defaultYN = "Y";
     protected final String firstImageYN = "Y";
@@ -12,7 +12,7 @@ public class ApiTourRequest extends ApiRequest {
     protected int contentId;
 
     @Builder
-    public ApiTourRequest(String serviceKey, int contentId) {
+    public TourApiRequest(String serviceKey, int contentId) {
         super(serviceKey);
         this.contentId = contentId;
     }
