@@ -24,11 +24,13 @@ public class User implements UserDetails {
     private String email;
 
     private String password;
+    private String nickname;
 
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
