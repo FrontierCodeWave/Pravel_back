@@ -45,6 +45,10 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Password is empty");
         }
 
+        if (StringUtils.isEmpty(userRequest.email())) {
+            throw new IllegalArgumentException("Nickname is empty");
+        }
+
         if (!Validator.isValidEmail(userRequest.email())) {
             throw new IllegalArgumentException("Email is invalid");
         }
@@ -57,11 +61,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private UserResponse save(CreateUserRequest userRequest) {
-        User save = authRepository.save(User.builder()
+        User user = authRepository.save(User.builder()
                 .email(userRequest.email())
                 .password(passwordEncoder.encode(userRequest.password()))
                 .build());
-        return new UserResponse(save.getEmail());
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .build();
     }
 
     @Override
