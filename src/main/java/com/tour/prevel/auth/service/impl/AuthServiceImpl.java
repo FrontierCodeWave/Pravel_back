@@ -63,6 +63,7 @@ public class AuthServiceImpl implements AuthService {
     private UserResponse save(CreateUserRequest userRequest) {
         User user = authRepository.save(User.builder()
                 .email(userRequest.email())
+                .nickname(userRequest.nickname())
                 .password(passwordEncoder.encode(userRequest.password()))
                 .build());
         return UserResponse.builder()
