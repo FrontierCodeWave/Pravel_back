@@ -1,6 +1,8 @@
 package com.tour.prevel.tour.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
+import com.tour.prevel.rating.service.StarRatingService;
+import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tour.dto.TourDetailResponse;
 import com.tour.prevel.tour.dto.TourListRequest;
 import com.tour.prevel.tour.dto.TourListResponse;
@@ -12,15 +14,12 @@ import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tour.mapper.TourMapper;
 import com.tour.prevel.tour.service.TourService;
+import com.tour.prevel.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -29,6 +28,9 @@ public class TourServiceImpl implements TourService {
 
     private final TourMapper tourMapper;
     private final TourApiService tourApiService;
+    private final StarRatingService ratingService;
+    private final ReviewService reviewService;
+    private final WishService wishService;
 
     @Override
     public TourListResponse getTourList(TourListRequest request) {
@@ -54,6 +56,7 @@ public class TourServiceImpl implements TourService {
                 tourApiService.createQueryParameters(tourResponse.getContentId(), tourResponse.getContentTypeId())
         ).getResponse().getBody().getItems().getItem().get(0);
 
+        // 영업시간
         switch (item.getContenttypeid()) {
             case "12":
                 tourResponse.setPlaytime(item.getUsetime());
@@ -71,6 +74,18 @@ public class TourServiceImpl implements TourService {
                 tourResponse.setPlaytime(item.getOpentime());
                 break;
         }
+
+        // 평점
+        double rating = ratingService.getRatingById(tourResponse.getContentId());
+        tourResponse.setRating(rating);
+
+        // 리뷰수
+        int review = reviewService.getReviewCountById(tourResponse.getContentId());
+        tourResponse.setReview(review);
+
+        // 위시리스트 여부
+        boolean wished = wishService.isWished("", tourResponse.getContentId());
+        tourResponse.setWish(wished);
 
         return tourResponse;
     }

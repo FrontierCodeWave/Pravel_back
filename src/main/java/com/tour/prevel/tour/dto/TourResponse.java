@@ -11,7 +11,6 @@ public class TourResponse {
     private String contentId;
     private String thumbnail;
     private String title;
-    private double rating;
     private double lat;
     private double lon;
     private String tel;
@@ -26,5 +25,9 @@ public class TourResponse {
     private boolean wish;
     @Setter
     private boolean like;
+    @Setter
+    private int review;
+    @Setter
+    private double rating;
 
 }
