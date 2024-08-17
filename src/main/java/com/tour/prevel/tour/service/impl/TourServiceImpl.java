@@ -19,12 +19,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
+
 
     private final TourMapper tourMapper;
     private final TourApiService tourApiService;
@@ -34,9 +38,6 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourListResponse getTourList(TourListRequest request) {
-        // TODO
-        // 컨텐츠 타입 39를 제외한 나머지를 각각 호출
-        // 각각의 응답을 합쳐서 반환
         String queryParameters = tourApiService.createQueryParameters(request.x(), request.y(), request.pageNo(), ContentTypeId.TOUR);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
@@ -44,6 +45,7 @@ public class TourServiceImpl implements TourService {
         List<TourResponse> list = tourResponses.stream()
                 .map((response) -> addInform(response))
                 .toList();
+
         return TourListResponse.builder()
                 .list(list)
                 .totalCount(body.getTotalCount())
