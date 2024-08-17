@@ -10,14 +10,15 @@ import java.util.List;
 @AllArgsConstructor
 public class TourApiListResponse {
 
-    private Response response;
+    public TourApiListResponse.Response response;
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private Body body;
+
+        private TourApiListResponse.Body body;
     }
 
     @Getter
@@ -25,7 +26,8 @@ public class TourApiListResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Body {
-        private Items items;
+
+        private TourApiListResponse.Items items;
         private int totalCount;
     }
 
@@ -35,7 +37,7 @@ public class TourApiListResponse {
     @AllArgsConstructor
     public static class Items {
 
-        private List<Item> item;
+        private List<TourApiListResponse.Item> item;
     }
 
     @Getter
@@ -43,6 +45,7 @@ public class TourApiListResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Item {
+
         private String contentid;
         private String addr1;
         private String addr2;
@@ -52,5 +55,6 @@ public class TourApiListResponse {
         private String tel;
         private String homepage;
         private String firstimage;
+        private String contenttypeid;
     }
 }

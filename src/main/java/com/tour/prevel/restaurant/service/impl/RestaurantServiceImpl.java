@@ -29,7 +29,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantListResponse getRestaurantList(RestaurantListRequest request) {
         String queryParameters = tourApiService.createQueryParameters(request.x(), request.y(), request.pageNo(), ContentTypeId.RESTAURANT);
 
-        TourApiListResponse.Body body = tourApiService.fetchListFromTourAPI(TourApiUrl.LIST, queryParameters).getResponse().getBody();
+        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
         List<RestaurantResponse> restaurantResponses = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         return RestaurantListResponse.builder()
                 .list(restaurantResponses)
@@ -41,7 +41,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDetailResponse getRestaurant(int contentId) {
         String queryParameters = tourApiService.createQueryParameters(contentId);
 
-        TourApiListResponse.Body body = tourApiService.fetchListFromTourAPI(TourApiUrl.DETAIL, queryParameters)
+        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
                 .getResponse().getBody();
         List<RestaurantDetailResponse> restaurantResponses = restaurantMapper.toRestaurantDetailListResponse(body.getItems().getItem());
         return restaurantResponses.stream().findFirst()
