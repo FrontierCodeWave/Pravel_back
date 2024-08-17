@@ -26,7 +26,9 @@ public interface TourMapper {
     List<TourDetailResponse> toTourDetailListResponse(List<TourApiListResponse.Item> apiResponse);
 
     @Named("toTourDetailResponse")
-    @Mapping(target = "firstImage", source = "firstimage")
+    @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
+    @Mapping(target = "contentTypeId", source = "contenttypeid")
+    @Mapping(target = "address", expression = "java((apiResponse.getAddr1() + \" \" + apiResponse.getAddr2()).trim())")
     TourDetailResponse toTourDetailResponse(TourApiListResponse.Item apiResponse);
 }

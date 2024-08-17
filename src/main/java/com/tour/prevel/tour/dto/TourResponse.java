@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Builder
 @Getter
-public class TourResponse {
+public class TourResponse implements TourCommonResponse {
 
     private String contentId;
     private String thumbnail;
@@ -29,5 +29,4 @@ public class TourResponse {
     private int review;
     @Setter
     private double rating;
-
 }

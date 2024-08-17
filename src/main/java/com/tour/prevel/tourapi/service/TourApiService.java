@@ -10,6 +10,7 @@ public interface TourApiService {
     String createQueryParameters(double mapX, double mapY, Integer pageNo, ContentTypeId contentTypeId);
     String createQueryParameters(int contentId);
     String createQueryParameters(String contentId, String contentTypeId);
+    String createQueryParameters(String search, ContentTypeId contentTypeId);
 
     TourApiListResponse fetchList(TourApiUrl url, String queryParameters);
     TourApiDetailIntroResponse fetchDetailIntro(TourApiUrl url, String queryParameters);

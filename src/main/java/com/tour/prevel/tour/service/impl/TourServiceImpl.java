@@ -3,10 +3,7 @@ package com.tour.prevel.tour.service.impl;
 import com.tour.prevel.global.exception.NotFound;
 import com.tour.prevel.rating.service.StarRatingService;
 import com.tour.prevel.review.service.ReviewService;
-import com.tour.prevel.tour.dto.TourDetailResponse;
-import com.tour.prevel.tour.dto.TourListRequest;
-import com.tour.prevel.tour.dto.TourListResponse;
-import com.tour.prevel.tour.dto.TourResponse;
+import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
@@ -19,10 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -52,7 +47,7 @@ public class TourServiceImpl implements TourService {
                 .build();
     }
 
-    private TourResponse addInform(TourResponse tourResponse) {
+    private <T extends TourCommonResponse> T addInform(T tourResponse) {
         TourApiDetailIntroResponse.Item item = tourApiService.fetchDetailIntro(
                 TourApiUrl.DETAIL_INTRO,
                 tourApiService.createQueryParameters(tourResponse.getContentId(), tourResponse.getContentTypeId())
@@ -93,13 +88,30 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    public TourListResponse getTourListBySearch(String search) {
+        String queryParameters = tourApiService.createQueryParameters(URLEncoder.encode(search), ContentTypeId.TOUR);
+
+        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.SEARCH_LIST, queryParameters).getResponse().getBody();
+        List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());
+        List<TourResponse> list = tourResponses.stream()
+                .map((response) -> addInform(response))
+                .toList();
+
+        return TourListResponse.builder()
+                .list(list)
+                .totalCount(body.getTotalCount())
+                .build();
+    }
+
+    @Override
     public TourDetailResponse getTour(int contentId) {
         String queryParameters = tourApiService.createQueryParameters(contentId);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
                 .getResponse().getBody();
         List<TourDetailResponse> tourResponses = tourMapper.toTourDetailListResponse(body.getItems().getItem());
-        return tourResponses.stream().findFirst()
+        TourDetailResponse tourDetailResponse = tourResponses.stream().findFirst()
                 .orElseThrow(() -> new NotFound());
+        return addInform(tourDetailResponse);
     }
 }

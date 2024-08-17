@@ -7,6 +7,7 @@ import com.tour.prevel.tourapi.dto.*;
 import com.tour.prevel.tourapi.service.TourApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -94,6 +95,16 @@ public class TourApiServiceImpl implements TourApiService {
         return TourApiDetailIntroRequest.builder()
                 .contentId(contentId)
                 .contentTypeId(contentTypeId)
+                .serviceKey(properties.getKey())
+                .build()
+                .toQueryParameters();
+    }
+
+    @Override
+    public String createQueryParameters(String search, ContentTypeId contentTypeId) {
+        return TourApiSearchListRequest.builder()
+                .contentTypeId(contentTypeId.getId())
+                .keyword(search)
                 .serviceKey(properties.getKey())
                 .build()
                 .toQueryParameters();

@@ -7,5 +7,6 @@ import com.tour.prevel.tour.dto.TourResponse;
 
 public interface TourService {
     TourListResponse getTourList(TourListRequest request);
+    TourListResponse getTourListBySearch(String search);
     TourDetailResponse getTour(int contentId);
 }
