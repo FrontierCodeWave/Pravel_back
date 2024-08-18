@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TourApiDetailIntroResponse {
@@ -59,6 +58,7 @@ public class TourApiDetailIntroResponse {
         private String taketime;
         private String usetimeleports;
         private String opentime;
+        private String opentimefood;
 
         private String treatmenu;
     }
