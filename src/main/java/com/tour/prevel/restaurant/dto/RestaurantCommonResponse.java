@@ -9,5 +9,5 @@ public interface RestaurantCommonResponse {
     void setWish(boolean wish);
     void setReview(int review);
     void setRating(double rating);
-    void setTreatmenu(List<String> treatmenu);
+    void setHashtags(List<String> hashtags);
 }

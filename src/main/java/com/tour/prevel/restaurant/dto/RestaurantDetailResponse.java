@@ -22,7 +22,7 @@ public class RestaurantDetailResponse implements RestaurantCommonResponse {
     @Setter
     private String playtime;
     @Setter
-    private List<String> treatmenu;
+    private List<String> hashtags;
 
     @Setter
     private boolean wish;

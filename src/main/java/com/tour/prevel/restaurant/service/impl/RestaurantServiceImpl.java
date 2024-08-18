@@ -65,7 +65,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                             .replaceAll("\\s*등$", "")
                             .replaceAll("\\s*외$", ""))
                     .toList();
-            restaurantResponse.setTreatmenu(list);
+            restaurantResponse.setHashtags(list);
         } catch (Exception e) {
             log.error("Failed to fetch restaurant detail from API", e);
         }
