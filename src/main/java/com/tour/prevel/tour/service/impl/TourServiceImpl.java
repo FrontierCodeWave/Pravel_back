@@ -48,28 +48,33 @@ public class TourServiceImpl implements TourService {
     }
 
     private <T extends TourCommonResponse> T addInform(T tourResponse) {
-        TourApiDetailIntroResponse.Item item = tourApiService.fetchDetailIntro(
-                TourApiUrl.DETAIL_INTRO,
-                tourApiService.createQueryParameters(tourResponse.getContentId(), tourResponse.getContentTypeId())
-        ).getResponse().getBody().getItems().getItem().get(0);
+        TourApiDetailIntroResponse.Item item;
+        try {
+            item = tourApiService.fetchDetailIntro(
+                    TourApiUrl.DETAIL_INTRO,
+                    tourApiService.createQueryParameters(tourResponse.getContentId(), tourResponse.getContentTypeId())
+            ).getResponse().getBody().getItems().getItem().get(0);
 
-        // 영업시간
-        switch (item.getContenttypeid()) {
-            case "12":
-                tourResponse.setPlaytime(item.getUsetime());
-                break;
-            case "14":
-                tourResponse.setPlaytime(item.getUsetimeculture());
-                break;
-            case "15":
-                tourResponse.setPlaytime(item.getPlaytime());
-                break;
-            case "25":
-                tourResponse.setPlaytime(item.getTaketime());
-                break;
-            case "28":
-                tourResponse.setPlaytime(item.getOpentime());
-                break;
+            // 영업시간
+            switch (item.getContenttypeid()) {
+                case "12":
+                    tourResponse.setPlaytime(item.getUsetime());
+                    break;
+                case "14":
+                    tourResponse.setPlaytime(item.getUsetimeculture());
+                    break;
+                case "15":
+                    tourResponse.setPlaytime(item.getPlaytime());
+                    break;
+                case "25":
+                    tourResponse.setPlaytime(item.getTaketime());
+                    break;
+                case "28":
+                    tourResponse.setPlaytime(item.getOpentime());
+                    break;
+            }
+        } catch (Exception e) {
+            log.error("Failed to fetch tour detail from API", e);
         }
 
         // 평점

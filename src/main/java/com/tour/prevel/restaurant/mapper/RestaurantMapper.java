@@ -14,15 +14,19 @@ public interface RestaurantMapper {
     List<RestaurantResponse> toRestaurantListResponse(List<TourApiListResponse.Item> apiResponse);
 
     @Named("toRestaurantResponse")
-    @Mapping(target = "firstImage", source = "firstimage")
+    @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
+    @Mapping(target = "lat", source = "mapx")
+    @Mapping(target = "lon", source = "mapy")
+    @Mapping(target = "address", expression = "java((apiResponse.getAddr1() + \" \" + apiResponse.getAddr2()).trim())")
     RestaurantResponse toRestaurantResponse(TourApiListResponse.Item apiResponse);
 
     @IterableMapping(qualifiedByName = "toRestaurantDetailResponse")
     List<RestaurantDetailResponse> toRestaurantDetailListResponse(List<TourApiListResponse.Item> apiResponse);
 
     @Named("toRestaurantDetailResponse")
-    @Mapping(target = "firstImage", source = "firstimage")
+    @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
+    @Mapping(target = "address", expression = "java((apiResponse.getAddr1() + \" \" + apiResponse.getAddr2()).trim())")
     RestaurantDetailResponse toRestaurantDetailResponse(TourApiListResponse.Item apiResponse);
 }
