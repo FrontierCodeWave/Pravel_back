@@ -1,14 +1,10 @@
 package com.tour.prevel.restaurant.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
-import com.tour.prevel.rating.service.StarRatingService;
 import com.tour.prevel.restaurant.dto.*;
 import com.tour.prevel.restaurant.mapper.RestaurantMapper;
 import com.tour.prevel.restaurant.service.RestaurantService;
 import com.tour.prevel.review.service.ReviewService;
-import com.tour.prevel.tour.dto.TourCommonResponse;
-import com.tour.prevel.tour.dto.TourListResponse;
-import com.tour.prevel.tour.dto.TourResponse;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
@@ -30,7 +26,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
     private final TourApiService tourApiService;
-    private final StarRatingService ratingService;
     private final ReviewService reviewService;
     private final WishService wishService;
 
@@ -71,7 +66,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
 
         // 평점
-        double rating = ratingService.getRatingById(restaurantResponse.getContentId());
+        double rating = reviewService.getRatingById(restaurantResponse.getContentId());
         restaurantResponse.setRating(rating);
 
         // 리뷰수
