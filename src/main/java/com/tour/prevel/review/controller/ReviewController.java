@@ -22,7 +22,7 @@ public class ReviewController {
     @GetMapping("tour/{contentId}/review")
     public ReviewListResponse getReviewList(
             @PathVariable String contentId,
-            @PageableDefault(direction = Sort.Direction.DESC, sort = "createdTime") Pageable pageable
+            @PageableDefault(size = 4, direction = Sort.Direction.DESC, sort = "createdTime") Pageable pageable
             ) {
         return reviewService.getReviewList(contentId, pageable);
     }
