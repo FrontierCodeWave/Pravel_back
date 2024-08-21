@@ -1,7 +1,6 @@
 package com.tour.prevel.tour.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
-import com.tour.prevel.rating.service.StarRatingService;
 import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
@@ -27,7 +26,6 @@ public class TourServiceImpl implements TourService {
 
     private final TourMapper tourMapper;
     private final TourApiService tourApiService;
-    private final StarRatingService ratingService;
     private final ReviewService reviewService;
     private final WishService wishService;
 
@@ -78,7 +76,7 @@ public class TourServiceImpl implements TourService {
         }
 
         // 평점
-        double rating = ratingService.getRatingById(tourResponse.getContentId());
+        double rating = reviewService.getRatingById(tourResponse.getContentId());
         tourResponse.setRating(rating);
 
         // 리뷰수
