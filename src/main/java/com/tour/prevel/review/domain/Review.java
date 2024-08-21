@@ -1,9 +1,12 @@
 package com.tour.prevel.review.domain;
 
 import com.tour.prevel.auth.domain.User;
+import com.tour.prevel.global.domain.CreatedTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -12,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AllArgsConstructor
-public class Review {
+public class Review extends CreatedTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.tour.prevel.auth.domain;
 
+import com.tour.prevel.global.domain.CreatedTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,19 +14,21 @@ import java.util.Collection;
 @Table(name = "TB_USER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+public class User extends CreatedTimeEntity implements UserDetails {
 
     @Id
     private String email;
 
     private String password;
     private String nickname;
+    private String profileImg;
 
     @Builder
-    public User(String email, String password, String nickname) {
+    public User(String email, String password, String nickname, String profileImg) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.profileImg = profileImg;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
