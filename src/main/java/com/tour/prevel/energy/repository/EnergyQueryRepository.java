@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
-import static com.tour.prevel.energy.domain.QEnergy.energy1;
 import static com.tour.prevel.energy.domain.QUserEnergy.userEnergy;
 import static com.tour.prevel.energy.domain.QUsedUserEnergy.usedUserEnergy;
 
@@ -27,7 +25,7 @@ public class EnergyQueryRepository {
 
         int usedEnergy = Optional.ofNullable(queryFactory.select(usedUserEnergy.usedEnergy.sum())
                 .from(usedUserEnergy)
-                .where(usedUserEnergy.user.email.eq(userId))
+                .where(usedUserEnergy.userEnergy.user.email.eq(userId))
                 .fetchOne()).orElse(0);
         return gainedEnergy - usedEnergy;
     }
