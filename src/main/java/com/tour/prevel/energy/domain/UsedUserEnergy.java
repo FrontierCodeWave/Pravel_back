@@ -17,7 +17,8 @@ public class UsedUserEnergy {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private UserEnergy userEnergy;
+
     private int usedEnergy;
 
     @OneToOne(fetch = FetchType.LAZY)
