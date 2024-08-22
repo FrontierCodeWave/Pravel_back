@@ -19,7 +19,8 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
     @ApiOperation("맛집 리스트 조회(버튼)")
-    public RestaurantListResponse getTourList(@RequestBody RestaurantListRequest request) {
+    public RestaurantListResponse getTourList(
+            @RequestBody RestaurantListRequest request) {
         return restaurantService.getRestaurantList(request);
     }
 
