@@ -26,5 +26,6 @@ public class UserReward extends CreatedTimeEntity {
     private Reward reward;
 
     private LocalDate expirationDate;
+    private LocalDate usedDate;
     private boolean used;
 }
