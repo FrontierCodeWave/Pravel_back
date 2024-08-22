@@ -1,6 +1,5 @@
 package com.tour.prevel.energy.domain;
 
-import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.global.domain.CreatedTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;

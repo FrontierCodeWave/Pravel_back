@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Table(name = "TB_USER_ENERGY")
 @Entity
@@ -28,4 +29,7 @@ public class UserEnergy extends CreatedTimeEntity {
     private Energy energy;
 
     private LocalDate expirationDate;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEnergy")
+    private List<UsedUserEnergy> usedUserEnergyList;
 }

@@ -1,9 +1,10 @@
 package com.tour.prevel.energy.domain;
 
-import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.reward.domain.Reward;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Table(name = "TB_USED_USER_ENERGY")
 @Entity
@@ -21,6 +22,8 @@ public class UsedUserEnergy {
 
     private int usedEnergy;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Reward reward;
+
+    private LocalDate usedDate;
 }
