@@ -40,15 +40,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantResponse> restaurantResponses = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantResponses.stream()
                 .map((response) -> addInform(response))
-                .map((response) -> {
-                    String detailQueryParameters = tourApiService.createQueryParameters(Integer.parseInt(response.getContentId()));
-                    TourApiListResponse.Body detailBody = tourApiService.fetchList(TourApiUrl.DETAIL, detailQueryParameters).getResponse().getBody();
-                    detailBody.getItems().getItem().stream().findFirst()
-                            .ifPresent(detail -> {
-                                response.setCategory(extractCategory(detail.getOverview()));
-                            });
-                    return response;
-                })
+                .map((response) -> fetchCategory(response))
                 .toList();
 
         return RestaurantListResponse.builder()
@@ -57,7 +49,17 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .build();
     }
 
-    private String extractCategory(String overview) {
+    private RestaurantResponse fetchCategory(RestaurantResponse restaurantResponse) {
+        String detailQueryParameters = tourApiService.createQueryParameters(Integer.parseInt(restaurantResponse.getContentId()));
+        TourApiListResponse.Body detailBody = tourApiService.fetchList(TourApiUrl.DETAIL, detailQueryParameters).getResponse().getBody();
+        detailBody.getItems().getItem().stream().findFirst()
+                .ifPresent(detail -> {
+                    restaurantResponse.setCategory(extractCategory(detail.getOverview()));
+                });
+        return restaurantResponse;
+    }
+
+    private String extractCategory(String overview ) {
         Map<String, FoodCategory> categoryMap = new HashMap<>();
         categoryMap.put("양식", FoodCategory.WESTERN);
         categoryMap.put("일식", FoodCategory.JAPANESE);
@@ -120,6 +122,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantResponse> restaurantListResponse = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantListResponse.stream()
                 .map((response) -> addInform(response))
+                .map((response) -> fetchCategory(response))
                 .toList();
 
         return RestaurantListResponse.builder()
