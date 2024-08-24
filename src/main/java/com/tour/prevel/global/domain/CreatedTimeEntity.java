@@ -1,5 +1,7 @@
 package com.tour.prevel.global.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 public class CreatedTimeEntity {
 
     @CreatedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @Column(name = "CREATE_DT", nullable = false, updatable = false)
     private LocalDateTime createdTime;
 }
