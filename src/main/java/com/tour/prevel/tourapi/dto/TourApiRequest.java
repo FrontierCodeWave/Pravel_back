@@ -5,6 +5,7 @@ import lombok.Builder;
 public class TourApiRequest extends ApiRequest {
 
     protected final String defaultYN = "Y";
+    protected final String overviewYN = "Y";
     protected final String firstImageYN = "Y";
     protected final String addrinfoYN = "Y";
     protected final String mapinfoYN = "Y";

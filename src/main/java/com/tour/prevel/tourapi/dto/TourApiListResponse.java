@@ -54,6 +54,7 @@ public class TourApiListResponse {
         private String title;
         private String tel;
         private String homepage;
+        private String overview;
         private String firstimage;
         private String contenttypeid;
     }
