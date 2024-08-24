@@ -3,6 +3,7 @@ package com.tour.prevel.auth.service.impl;
 import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.auth.dto.CreateUserRequest;
 import com.tour.prevel.auth.dto.UserResponse;
+import com.tour.prevel.auth.mapper.AuthMapper;
 import com.tour.prevel.auth.repository.AuthRepository;
 import com.tour.prevel.auth.service.AuthService;
 import com.tour.prevel.auth.utils.Validator;
@@ -17,6 +18,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final AuthRepository authRepository;
+    private final AuthMapper authMapper;
 
     @Override
     public UserResponse createUser(CreateUserRequest userRequest) {
@@ -34,6 +36,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return save(userRequest);
+    }
+
+    @Override
+    public UserResponse getUser(String email) {
+        User user = authRepository.findById(email).orElseGet(() -> {
+            throw new IllegalArgumentException("User not found");
+        });
+        return authMapper.toUserResponse(user);
     }
 
     private boolean validate(CreateUserRequest userRequest) {
@@ -66,10 +76,7 @@ public class AuthServiceImpl implements AuthService {
                 .nickname(userRequest.nickname())
                 .password(passwordEncoder.encode(userRequest.password()))
                 .build());
-        return UserResponse.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .build();
+        return authMapper.toUserResponse(user);
     }
 
     @Override
