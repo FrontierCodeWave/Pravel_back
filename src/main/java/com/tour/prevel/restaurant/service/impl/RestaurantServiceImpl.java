@@ -1,6 +1,7 @@
 package com.tour.prevel.restaurant.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
+import com.tour.prevel.restaurant.domain.FoodCategory;
 import com.tour.prevel.restaurant.dto.*;
 import com.tour.prevel.restaurant.mapper.RestaurantMapper;
 import com.tour.prevel.restaurant.service.RestaurantService;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -37,12 +40,43 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantResponse> restaurantResponses = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantResponses.stream()
                 .map((response) -> addInform(response))
+                .map((response) -> fetchCategory(response))
                 .toList();
 
         return RestaurantListResponse.builder()
                 .list(list)
                 .totalCount(body.getTotalCount())
                 .build();
+    }
+
+    private RestaurantResponse fetchCategory(RestaurantResponse restaurantResponse) {
+        String detailQueryParameters = tourApiService.createQueryParameters(Integer.parseInt(restaurantResponse.getContentId()));
+        TourApiListResponse.Body detailBody = tourApiService.fetchList(TourApiUrl.DETAIL, detailQueryParameters).getResponse().getBody();
+        detailBody.getItems().getItem().stream().findFirst()
+                .ifPresent(detail -> {
+                    restaurantResponse.setCategory(extractCategory(detail.getOverview()));
+                });
+        return restaurantResponse;
+    }
+
+    private String extractCategory(String overview ) {
+        Map<String, FoodCategory> categoryMap = new HashMap<>();
+        categoryMap.put("양식", FoodCategory.WESTERN);
+        categoryMap.put("일식", FoodCategory.JAPANESE);
+        categoryMap.put("한식", FoodCategory.KOREAN);
+        categoryMap.put("한정식", FoodCategory.KOREAN);
+        categoryMap.put("중식", FoodCategory.CHINESE);
+        categoryMap.put("카페", FoodCategory.CAFE);
+
+        try {
+            for (String category : categoryMap.keySet()) {
+                if (overview.contains(category)) {
+                    return categoryMap.get(category).getCategory();
+                }
+            }
+        } catch (Exception e) {}
+
+        return "기타";
     }
 
     private <T extends RestaurantCommonResponse> T addInform(T restaurantResponse) {
@@ -88,6 +122,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantResponse> restaurantListResponse = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantListResponse.stream()
                 .map((response) -> addInform(response))
+                .map((response) -> fetchCategory(response))
                 .toList();
 
         return RestaurantListResponse.builder()

@@ -17,6 +17,8 @@ public class RestaurantResponse implements RestaurantCommonResponse {
     private double lon;
     private String tel;
     @Setter
+    private String category;
+    @Setter
     private String address;
 
     @Setter
