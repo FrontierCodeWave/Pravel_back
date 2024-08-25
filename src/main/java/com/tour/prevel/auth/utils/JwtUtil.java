@@ -44,6 +44,12 @@ public class JwtUtil {
     }
 
     public String getUserId(String token) {
+        if (isBearerToken(token)) {
+            token = extractBearerToken(token);
+        }
+
+        Jwt decode = this.decoder.decode(token);
+
         return this.decoder.decode(token).getClaimAsString("userId");
     }
 
@@ -55,5 +61,13 @@ public class JwtUtil {
             log.error("Error while validating token", e);
             return false;
         }
+    }
+
+    public boolean isBearerToken(String header) {
+        return header.startsWith("Bearer ");
+    }
+
+    public String extractBearerToken(String header) {
+        return header.replace("Bearer ", "");
     }
 }

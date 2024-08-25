@@ -1,11 +1,13 @@
 package com.tour.prevel.global.exception;
 
+import com.nimbusds.jose.proc.BadJWSException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Globals;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +26,19 @@ import java.util.Map;
 public class GlobalControllerAdvice {
 
     private final MessageSource messageSource;
+
+    @ExceptionHandler({ BadJWSException.class })
+    protected ResponseEntity<Object> handleBadJWSException(
+            Exception ex,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            WebRequest webRequest
+    ) {
+        log.error("?? Error occurred while requesting URI={}, HTTP StatusCode={}, Exception={}, Message={}",
+                request.getRequestURI(), response.getStatus(), ex.getClass().getName(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(createErrorAttribute(webRequest, messageSource.getMessage("error.auth.unauthorized", null, null)));
+    }
 
     @ExceptionHandler({ UsernameNotFoundException.class, BadCredentialsException.class})
     protected ResponseEntity<Object> handleUsernameNotFoundException(
