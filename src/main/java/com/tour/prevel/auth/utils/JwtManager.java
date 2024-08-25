@@ -1,4 +1,5 @@
 package com.tour.prevel.auth.utils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
@@ -10,29 +11,17 @@ import java.security.interfaces.RSAPublicKey;
 @Component
 public class JwtManager {
 
-    private final KeyPair keyPair;
+    @Value("${auth.key.public}")
+    RSAPublicKey publicKey;
 
-    public JwtManager() {
-        this.keyPair = generateKeyPair();
-    }
-
-    private KeyPair generateKeyPair() {
-
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-
-            return keyPairGenerator.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Value("${auth.key.private}")
+    RSAPrivateKey privateKey;
 
     public RSAPublicKey getPublicKey() {
-        return (RSAPublicKey) keyPair.getPublic();
+        return this.publicKey;
     }
 
     public RSAPrivateKey getPrivateKey() {
-        return (RSAPrivateKey) keyPair.getPrivate();
+        return this.privateKey;
     }
 }
