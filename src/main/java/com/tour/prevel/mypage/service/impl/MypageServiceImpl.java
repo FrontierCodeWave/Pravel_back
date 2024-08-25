@@ -20,10 +20,12 @@ public class MypageServiceImpl implements MypageService {
         int currentEnergyCount = energyService.getCurrentEnergyCount(userId);
         int currentCouponCount = rewardService.getCurrentRewardCountByType(userId, RewardType.COUPON);
         int currentGiftCount = rewardService.getCurrentRewardCountByType(userId, RewardType.GIFT);
+        int totalRewardCount = rewardService.getTotalRewardCount(userId);
         return MypageTotalCountResponse.builder()
                 .currentEnergyCount(currentEnergyCount)
                 .currentCouponCount(currentCouponCount)
                 .currentGiftCount(currentGiftCount)
+                .totalRewardCount(totalRewardCount)
                 .build();
     }
 }

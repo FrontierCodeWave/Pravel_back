@@ -57,4 +57,11 @@ public class RewardQueryRepository {
                 .list(list)
                 .build();
     }
+
+    public int getTotalRewardCount(String userId) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(userReward)
+                .where(userReward.user.email.eq(userId))
+                .fetchCount()).orElse(0L).intValue();
+    }
 }
