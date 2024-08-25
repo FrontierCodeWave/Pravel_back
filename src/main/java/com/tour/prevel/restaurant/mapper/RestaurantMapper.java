@@ -27,6 +27,5 @@ public interface RestaurantMapper {
     @Named("toRestaurantDetailResponse")
     @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
-    @Mapping(target = "address", expression = "java((apiResponse.getAddr1() + \" \" + apiResponse.getAddr2()).trim())")
     RestaurantDetailResponse toRestaurantDetailResponse(TourApiListResponse.Item apiResponse);
 }

@@ -13,9 +13,8 @@ public class TourDetailResponse implements TourCommonResponse {
     private String title;
     private String homepage;
     private String tel;
-
-    @Setter
-    private String address;
+    private String addr1;
+    private String addr2;
 
     @Setter
     private String playtime;
