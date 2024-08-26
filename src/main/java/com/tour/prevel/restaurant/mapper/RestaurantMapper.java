@@ -27,5 +27,6 @@ public interface RestaurantMapper {
     @Named("toRestaurantDetailResponse")
     @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
+    @Mapping(target = "category", source = "overview")
     RestaurantDetailResponse toRestaurantDetailResponse(TourApiListResponse.Item apiResponse);
 }

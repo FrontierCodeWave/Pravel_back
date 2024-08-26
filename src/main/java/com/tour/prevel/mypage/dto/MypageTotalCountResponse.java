@@ -6,6 +6,7 @@ import lombok.Builder;
 public record MypageTotalCountResponse(
         int currentEnergyCount,
         int currentCouponCount,
-        int currentGiftCount
+        int currentGiftCount,
+        int totalRewardCount
 ) {
 }

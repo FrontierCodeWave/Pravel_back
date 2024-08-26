@@ -1,6 +1,7 @@
 package com.tour.prevel.config;
 
 import com.tour.prevel.auth.utils.JwtUtil;
+import com.tour.prevel.global.auth.BearerAuthenticationProvider;
 import com.tour.prevel.global.auth.LoginAuthenticationProvider;
 import com.tour.prevel.global.auth.handler.LoginFailureHandler;
 import com.tour.prevel.global.auth.handler.LoginSuccessHandler;
@@ -28,11 +29,17 @@ public class SecurityConfig {
 
     private final MessageSource messageSource;
     private final LoginAuthenticationProvider authenticationProvider;
+    private final BearerAuthenticationProvider bearerAuthenticationProvider;
     private final JwtUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(authenticationProvider);
+    }
+
+    @Bean
+    public AuthenticationManager bearerAuthenticationManager() {
+        return new ProviderManager(bearerAuthenticationProvider);
     }
 
     public Filter loginAuthenticationFilter()  {
@@ -65,7 +72,10 @@ public class SecurityConfig {
                 .addFilterBefore(loginAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2
+                                .authenticationManagerResolver(authentication -> bearerAuthenticationManager())
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())

@@ -22,4 +22,9 @@ public class RewardServiceImpl implements RewardService {
     public RewardListResponse getRewardList(String userId) {
         return rewardQueryRepository.getRewardList(userId);
     }
+
+    @Override
+    public int getTotalRewardCount(String userId) {
+        return rewardQueryRepository.getTotalRewardCount(userId);
+    }
 }
