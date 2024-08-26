@@ -19,6 +19,8 @@ public class RestaurantDetailResponse implements RestaurantCommonResponse {
     private String addr2;
 
     @Setter
+    private String category;
+    @Setter
     private String playtime;
     @Setter
     private List<String> hashtags;

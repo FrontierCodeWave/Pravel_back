@@ -140,6 +140,8 @@ public class RestaurantServiceImpl implements RestaurantService {
         List<RestaurantDetailResponse> restaurantResponses = restaurantMapper.toRestaurantDetailListResponse(body.getItems().getItem());
         RestaurantDetailResponse restaurantDetailResponse = restaurantResponses.stream().findFirst()
                 .orElseThrow(() -> new NotFound());
+        restaurantDetailResponse.setCategory(extractCategory(restaurantDetailResponse.getCategory()));
+
         return addInform(restaurantDetailResponse);
     }
 }
