@@ -89,7 +89,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
             restaurantResponse.setPlaytime(item.getOpentimefood());
 
-            List<String> list = Arrays.asList(item.getTreatmenu().split("\\s*/\\s*"))
+            List<String> list = Arrays.asList(item.getTreatmenu().split("[/,]\\s*|\\s*[/,]"))
                     .stream().map((food) -> food
                             .replaceAll("\\s*등$", "")
                             .replaceAll("\\s*외$", ""))
