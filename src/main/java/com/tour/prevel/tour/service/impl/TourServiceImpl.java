@@ -6,6 +6,8 @@ import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
+import com.tour.prevel.tourapi.dto.TourApiImageListRequest;
+import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tour.mapper.TourMapper;
@@ -13,6 +15,7 @@ import com.tour.prevel.tour.service.TourService;
 import com.tour.prevel.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -116,5 +119,15 @@ public class TourServiceImpl implements TourService {
         TourDetailResponse tourDetailResponse = tourResponses.stream().findFirst()
                 .orElseThrow(() -> new NotFound());
         return addInform(tourDetailResponse);
+    }
+
+    @Override
+    public List<String> getTourImage(String contentId, int page) {
+        String queryParameters = tourApiService.createQueryParameters(contentId, page);
+
+        TourApiImageListResponse.Body body = tourApiService.fetchImageList(TourApiUrl.IMAGE_LIST, queryParameters)
+                .getResponse().getBody();
+        return body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
+                .toList();
     }
 }

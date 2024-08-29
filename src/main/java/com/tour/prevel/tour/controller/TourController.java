@@ -6,8 +6,12 @@ import com.tour.prevel.tour.dto.TourListResponse;
 import com.tour.prevel.tour.service.TourService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,5 +39,14 @@ public class TourController {
     @ApiOperation("관광지 상세 정보 조회")
     public TourDetailResponse getTour(@PathVariable String contentId) {
         return tourService.getTour(Integer.parseInt(contentId));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{contentId}/image")
+    @ApiOperation("관광지 이미지 조회")
+    public List<String> getTourImage(
+            @PathVariable String contentId,
+            @PageableDefault(size = 9, page = 1) int page) {
+        return tourService.getTourImage(contentId, page);
     }
 }

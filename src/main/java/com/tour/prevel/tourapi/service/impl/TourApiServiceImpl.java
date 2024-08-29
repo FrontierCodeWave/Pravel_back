@@ -70,6 +70,30 @@ public class TourApiServiceImpl implements TourApiService {
     }
 
     @Override
+    public TourApiImageListResponse fetchImageList(TourApiUrl url, String queryParameters) {
+        try {
+            return webClient.get()
+                    .uri(properties.getSuburl() + url.getUrl() + "?" + queryParameters)
+                    .retrieve()
+                    .bodyToMono(TourApiImageListResponse.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Failed to fetch tour list from API", e);
+            return TourApiImageListResponse.builder()
+                    .response(TourApiImageListResponse.Response.builder()
+                            .body(TourApiImageListResponse.Body.builder()
+                                    .items(TourApiImageListResponse.Items.builder()
+                                            .item(Collections.emptyList())
+                                            .build()
+                                    )
+                                    .totalCount(0)
+                                    .build())
+                            .build())
+                    .build();
+        }
+    }
+
+    @Override
     public String createQueryParameters(double mapX, double mapY, Integer pageNo, ContentTypeId contentTypeId) {
         return TourApiListRequest.builder()
                 .mapX(String.valueOf(mapX))
@@ -110,4 +134,13 @@ public class TourApiServiceImpl implements TourApiService {
                 .toQueryParameters();
     }
 
+    @Override
+    public String createQueryParameters(String contentId, int pageNo) {
+        return TourApiImageListRequest.builder()
+                .contentId(contentId)
+                .pageNo(pageNo)
+                .serviceKey(properties.getKey())
+                .build()
+                .toQueryParameters();
+    }
 }

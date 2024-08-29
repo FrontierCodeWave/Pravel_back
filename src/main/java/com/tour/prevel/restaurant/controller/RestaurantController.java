@@ -6,8 +6,11 @@ import com.tour.prevel.restaurant.dto.RestaurantListResponse;
 import com.tour.prevel.restaurant.service.RestaurantService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,5 +39,14 @@ public class RestaurantController {
     @ApiOperation("맛집 상세 정보 조회")
     public RestaurantDetailResponse getTour(@PathVariable String contentId) {
         return restaurantService.getRestaurant(Integer.parseInt(contentId));
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{contentId}/image")
+    @ApiOperation("맛집 이미지 조회")
+    public List<String> getTourImage(
+            @PathVariable String contentId,
+            @PageableDefault(size = 9, page = 1) int page) {
+        return restaurantService.getRestaurantImage(contentId, page);
     }
 }
