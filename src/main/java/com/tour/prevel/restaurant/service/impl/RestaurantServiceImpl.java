@@ -9,6 +9,7 @@ import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
+import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.wish.service.WishService;
@@ -143,5 +144,15 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantDetailResponse.setCategory(extractCategory(restaurantDetailResponse.getCategory()));
 
         return addInform(restaurantDetailResponse);
+    }
+
+    @Override
+    public List<String> getRestaurantImage(String contentId, int page) {
+        String queryParameters = tourApiService.createQueryParameters(contentId, page);
+
+        TourApiImageListResponse.Body body = tourApiService.fetchImageList(TourApiUrl.IMAGE_LIST, queryParameters)
+                .getResponse().getBody();
+        return body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
+                .toList();
     }
 }
