@@ -4,7 +4,6 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tour.prevel.energy.domain.Energy;
 import com.tour.prevel.energy.domain.UserEnergy;
-import com.tour.prevel.energy.dto.EnergyListResponse;
 import com.tour.prevel.energy.dto.EnergyResponse;
 import com.tour.prevel.energy.dto.UsedEnergyResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,7 @@ public class EnergyQueryRepository {
         return gainedEnergy - usedEnergy;
     }
 
-    public EnergyListResponse getEnergyList(String userId) {
+    public List<EnergyResponse> getEnergyList(String userId) {
         Map<Long, UsedEnergyResponse> usedEnergyResponseMap = queryFactory
                 .select(
                         usedUserEnergy.userEnergy,
@@ -72,16 +71,16 @@ public class EnergyQueryRepository {
             UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
 
             return EnergyResponse.builder()
+                    .id(gainUserEnergy.getId())
                     .title(gainEnergy.getTitle())
                     .location(gainEnergy.getLocation())
                     .expirationDate(gainUserEnergy.getExpirationDate())
                     .usedDate(usedEnergyResponse.usedDate())
                     .used(gainEnergy.getEnergy() - usedEnergyResponse.usedEnergy() == 0)
+                    .energy(gainEnergy.getEnergy())
                     .build();
         }).toList();
 
-        return EnergyListResponse.builder()
-                .list(list)
-                .build();
+        return list;
     }
 }

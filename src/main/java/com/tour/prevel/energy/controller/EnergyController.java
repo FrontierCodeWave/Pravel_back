@@ -1,13 +1,13 @@
 package com.tour.prevel.energy.controller;
 
-import com.tour.prevel.energy.dto.EnergyListResponse;
+import com.tour.prevel.auth.utils.JwtUtil;
+import com.tour.prevel.energy.dto.EnergyResponse;
 import com.tour.prevel.energy.servce.EnergyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class EnergyController {
 
     private final EnergyService energyService;
+    private final JwtUtil jwtUtil;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public EnergyListResponse getEnergyList() {
-        return energyService.getEnergyList("test@test.com");
+    public List<EnergyResponse> getEnergyList(@RequestHeader(name = "Authorization") String token) {
+        String userId = jwtUtil.getUserId(token);
+        return energyService.getEnergyList(userId);
     }
 }

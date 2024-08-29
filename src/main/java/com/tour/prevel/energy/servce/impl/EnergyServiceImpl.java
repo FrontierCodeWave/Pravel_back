@@ -1,10 +1,12 @@
 package com.tour.prevel.energy.servce.impl;
 
-import com.tour.prevel.energy.dto.EnergyListResponse;
+import com.tour.prevel.energy.dto.EnergyResponse;
 import com.tour.prevel.energy.repository.EnergyQueryRepository;
 import com.tour.prevel.energy.servce.EnergyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class EnergyServiceImpl implements EnergyService {
     }
 
     @Override
-    public EnergyListResponse getEnergyList(String userId) {
+    public List<EnergyResponse> getEnergyList(String userId) {
         return energyQueryRepository.getEnergyList(userId);
     }
 }
