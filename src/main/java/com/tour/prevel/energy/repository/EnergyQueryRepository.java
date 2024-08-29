@@ -37,7 +37,7 @@ public class EnergyQueryRepository {
         return gainedEnergy - usedEnergy;
     }
 
-    public List<EnergyResponse> getEnergyList(String userId) {
+    public List<EnergyResponse> getEnergyList(String userId, boolean used) {
         Map<Long, UsedEnergyResponse> usedEnergyResponseMap = queryFactory
                 .select(
                         usedUserEnergy.userEnergy,
@@ -65,21 +65,28 @@ public class EnergyQueryRepository {
                 .where(userEnergy.user.email.eq(userId))
                 .fetch();
 
-        List<EnergyResponse> list = gainEnergyList.stream().map((energy) -> {
-            UserEnergy gainUserEnergy = energy.get(userEnergy);
-            Energy gainEnergy = energy.get(energy1);
-            UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
+        List<EnergyResponse> list = gainEnergyList.stream()
+                .filter((energy) -> {
+                    UserEnergy gainUserEnergy = energy.get(userEnergy);
+                    Energy gainEnergy = energy.get(energy1);
+                    UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
+                    int restEnergy = gainEnergy.getEnergy() - usedEnergyResponse.usedEnergy();
+                    return used ? restEnergy == 0 : restEnergy > 0;
+                }).map((energy) -> {
+                    UserEnergy gainUserEnergy = energy.get(userEnergy);
+                    Energy gainEnergy = energy.get(energy1);
+                    UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
 
-            return EnergyResponse.builder()
-                    .id(gainUserEnergy.getId())
-                    .title(gainEnergy.getTitle())
-                    .location(gainEnergy.getLocation())
-                    .expirationDate(gainUserEnergy.getExpirationDate())
-                    .usedDate(usedEnergyResponse.usedDate())
-                    .used(gainEnergy.getEnergy() - usedEnergyResponse.usedEnergy() == 0)
-                    .energy(gainEnergy.getEnergy())
-                    .build();
-        }).toList();
+                    return EnergyResponse.builder()
+                            .id(gainUserEnergy.getId())
+                            .title(gainEnergy.getTitle())
+                            .location(gainEnergy.getLocation())
+                            .expirationDate(gainUserEnergy.getExpirationDate())
+                            .usedDate(usedEnergyResponse.usedDate())
+                            .used(gainEnergy.getEnergy() - usedEnergyResponse.usedEnergy() == 0)
+                            .energy(gainEnergy.getEnergy())
+                            .build();
+                }).toList();
 
         return list;
     }
