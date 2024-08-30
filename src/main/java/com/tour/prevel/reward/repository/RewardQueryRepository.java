@@ -34,6 +34,7 @@ public class RewardQueryRepository {
     public List<RewardResponse> getRewardListById(String userId, boolean used) {
         List<Tuple> fetch = queryFactory
                 .select(
+                        userReward.id,
                         userReward.reward.name,
                         userReward.used,
                         userReward.reward.expirationDate,
@@ -44,7 +45,10 @@ public class RewardQueryRepository {
                 .where(userReward.user.email.eq(userId))
                 .fetch();
 
-        List<RewardResponse> list = fetch.stream().map(tuple -> RewardResponse.builder()
+        List<RewardResponse> list = fetch.stream()
+                .filter(tuple -> used == (boolean) tuple.get(userReward.used))
+                .map(tuple -> RewardResponse.builder()
+                        .id(tuple.get(userReward.id))
                         .name(tuple.get(userReward.reward.name))
                         .used(tuple.get(userReward.used))
                         .expirationDate(tuple.get(userReward.reward.expirationDate))

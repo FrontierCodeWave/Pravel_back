@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Builder
 public record RewardResponse(
+        Long id,
         String name,
         boolean used,
         LocalDate expirationDate,
