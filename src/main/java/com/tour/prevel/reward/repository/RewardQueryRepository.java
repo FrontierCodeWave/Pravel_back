@@ -3,7 +3,6 @@ package com.tour.prevel.reward.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tour.prevel.reward.domain.RewardType;
-import com.tour.prevel.reward.dto.RewardListResponse;
 import com.tour.prevel.reward.dto.RewardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ public class RewardQueryRepository {
                 .fetchOne()).orElse(0L).intValue();
     }
 
-    public RewardListResponse getRewardListById(String userId, boolean used) {
+    public List<RewardResponse> getRewardListById(String userId, boolean used) {
         List<Tuple> fetch = queryFactory
                 .select(
                         userReward.reward.name,
@@ -53,9 +52,7 @@ public class RewardQueryRepository {
                         .build())
                 .toList();
 
-        return RewardListResponse.builder()
-                .list(list)
-                .build();
+        return list;
     }
 
     public int getTotalRewardCount(String userId) {
