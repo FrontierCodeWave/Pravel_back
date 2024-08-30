@@ -5,6 +5,7 @@ import com.tour.prevel.mypage.dto.MypageTotalCountResponse;
 import com.tour.prevel.mypage.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -13,14 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class MypageController {
 
     private final MypageService mypageService;
-    private final JwtUtil jwtUtil;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public MypageTotalCountResponse getTotalCount(
-            @RequestHeader(name = "Authorization") String token
-    ) {
-        String userId = jwtUtil.getUserId(token);
-        return mypageService.getTotalCount(userId);
+    public MypageTotalCountResponse getTotalCount(Authentication auth) {
+        return mypageService.getTotalCount(auth.getName());
     }
 }

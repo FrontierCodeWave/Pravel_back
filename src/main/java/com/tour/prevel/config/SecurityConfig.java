@@ -1,7 +1,6 @@
 package com.tour.prevel.config;
 
 import com.tour.prevel.auth.utils.JwtUtil;
-import com.tour.prevel.global.auth.BearerAuthenticationProvider;
 import com.tour.prevel.global.auth.LoginAuthenticationProvider;
 import com.tour.prevel.global.auth.handler.LoginFailureHandler;
 import com.tour.prevel.global.auth.handler.LoginSuccessHandler;
@@ -58,7 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico", "/errors/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 );
 
         http

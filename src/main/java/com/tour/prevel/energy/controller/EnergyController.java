@@ -5,8 +5,10 @@ import com.tour.prevel.energy.dto.EnergyResponse;
 import com.tour.prevel.energy.servce.EnergyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,10 +22,9 @@ public class EnergyController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<EnergyResponse> getMyEnergyList(
-            @RequestHeader(name = "Authorization") String token,
+            Authentication auth,
             boolean used
     ) {
-        String userId = jwtUtil.getUserId(token);
-        return energyService.getEnergyListById(userId, used);
+        return energyService.getEnergyListById(auth.getName(), used);
     }
 }
