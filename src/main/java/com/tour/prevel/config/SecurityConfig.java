@@ -29,17 +29,11 @@ public class SecurityConfig {
 
     private final MessageSource messageSource;
     private final LoginAuthenticationProvider authenticationProvider;
-    private final BearerAuthenticationProvider bearerAuthenticationProvider;
     private final JwtUtil jwtUtil;
 
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(authenticationProvider);
-    }
-
-    @Bean
-    public AuthenticationManager bearerAuthenticationManager() {
-        return new ProviderManager(bearerAuthenticationProvider);
     }
 
     public Filter loginAuthenticationFilter()  {
@@ -73,8 +67,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(
-                        oauth2 -> oauth2
-                                .authenticationManagerResolver(authentication -> bearerAuthenticationManager())
+                        oauth2 -> oauth2.jwt(Customizer.withDefaults())
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
