@@ -5,6 +5,6 @@ import com.tour.prevel.reward.dto.RewardListResponse;
 
 public interface RewardService {
     int getCurrentRewardCountByType(String userId, RewardType rewardType);
-    RewardListResponse getRewardList(String userId);
+    RewardListResponse getRewardListById(String userId, boolean used);
     int getTotalRewardCount(String userId);
 }

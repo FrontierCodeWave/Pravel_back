@@ -19,8 +19,8 @@ public class RewardServiceImpl implements RewardService {
     }
 
     @Override
-    public RewardListResponse getRewardList(String userId) {
-        return rewardQueryRepository.getRewardList(userId);
+    public RewardListResponse getRewardListById(String userId, boolean used) {
+        return rewardQueryRepository.getRewardListById(userId, used);
     }
 
     @Override

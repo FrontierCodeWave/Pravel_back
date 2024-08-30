@@ -1,13 +1,11 @@
 package com.tour.prevel.reward.controller;
 
+import com.tour.prevel.auth.utils.JwtUtil;
 import com.tour.prevel.reward.dto.RewardListResponse;
 import com.tour.prevel.reward.service.RewardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,10 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class RewardController {
 
     private final RewardService rewardService;
+    private final JwtUtil jwtUtil;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public RewardListResponse getEnergyList() {
-        return rewardService.getRewardList("test@test.com");
+    public RewardListResponse getMyRewardList(
+            @RequestHeader(name = "Authorization") String token,
+            boolean used
+    ) {
+        String userId = jwtUtil.getUserId(token);
+        return rewardService.getRewardListById(userId, used);
     }
 }

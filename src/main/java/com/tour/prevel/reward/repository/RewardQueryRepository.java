@@ -32,7 +32,7 @@ public class RewardQueryRepository {
                 .fetchOne()).orElse(0L).intValue();
     }
 
-    public RewardListResponse getRewardList(String userId) {
+    public RewardListResponse getRewardListById(String userId, boolean used) {
         List<Tuple> fetch = queryFactory
                 .select(
                         userReward.reward.name,
