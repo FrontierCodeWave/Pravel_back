@@ -27,6 +27,19 @@ public class GlobalControllerAdvice {
 
     private final MessageSource messageSource;
 
+    @ExceptionHandler({ NotFound.class })
+    protected ResponseEntity<Object> handleNotFound(
+            Exception ex,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            WebRequest webRequest
+    ) {
+        log.error("?? Error occurred while requesting URI={}, HTTP StatusCode={}, Exception={}, Message={}",
+                request.getRequestURI(), response.getStatus(), ex.getClass().getName(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(createErrorAttribute(webRequest, messageSource.getMessage("error.badrequest", null, null)));
+    }
+
     @ExceptionHandler({ BadJWSException.class })
     protected ResponseEntity<Object> handleBadJWSException(
             Exception ex,
