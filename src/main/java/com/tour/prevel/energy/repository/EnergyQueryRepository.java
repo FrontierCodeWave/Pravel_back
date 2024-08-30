@@ -37,7 +37,7 @@ public class EnergyQueryRepository {
         return gainedEnergy - usedEnergy;
     }
 
-    public List<EnergyResponse> getEnergyList(String userId, boolean used) {
+    public List<EnergyResponse> getEnergyListById(String userId, boolean used) {
         Map<Long, UsedEnergyResponse> usedEnergyResponseMap = queryFactory
                 .select(
                         usedUserEnergy.userEnergy,

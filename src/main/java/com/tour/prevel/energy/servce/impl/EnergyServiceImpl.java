@@ -20,7 +20,7 @@ public class EnergyServiceImpl implements EnergyService {
     }
 
     @Override
-    public List<EnergyResponse> getEnergyList(String userId, boolean used) {
-        return energyQueryRepository.getEnergyList(userId, used);
+    public List<EnergyResponse> getEnergyListById(String userId, boolean used) {
+        return energyQueryRepository.getEnergyListById(userId, used);
     }
 }

@@ -19,11 +19,11 @@ public class EnergyController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<EnergyResponse> getEnergyList(
+    public List<EnergyResponse> getMyEnergyList(
             @RequestHeader(name = "Authorization") String token,
             boolean used
     ) {
         String userId = jwtUtil.getUserId(token);
-        return energyService.getEnergyList(userId, used);
+        return energyService.getEnergyListById(userId, used);
     }
 }
