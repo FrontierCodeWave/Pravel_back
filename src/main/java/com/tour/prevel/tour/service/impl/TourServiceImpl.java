@@ -76,6 +76,7 @@ public class TourServiceImpl implements TourService {
             }
         } catch (Exception e) {
             log.error("Failed to fetch tour detail from API", e);
+            tourResponse.setPlaytime(null);
         }
 
         // 평점

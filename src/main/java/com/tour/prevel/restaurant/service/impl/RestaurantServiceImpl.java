@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -52,12 +49,19 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private RestaurantResponse fetchCategory(RestaurantResponse restaurantResponse) {
         String detailQueryParameters = tourApiService.createQueryParameters(Integer.parseInt(restaurantResponse.getContentId()));
-        TourApiListResponse.Body detailBody = tourApiService.fetchList(TourApiUrl.DETAIL, detailQueryParameters).getResponse().getBody();
-        detailBody.getItems().getItem().stream().findFirst()
-                .ifPresent(detail -> {
-                    restaurantResponse.setCategory(extractCategory(detail.getOverview()));
-                });
-        return restaurantResponse;
+
+        try {
+            TourApiListResponse.Body detailBody = tourApiService.fetchList(TourApiUrl.DETAIL, detailQueryParameters).getResponse().getBody();
+            detailBody.getItems().getItem().stream().findFirst()
+                    .ifPresent(detail -> {
+                        restaurantResponse.setCategory(extractCategory(detail.getOverview()));
+                    });
+            return restaurantResponse;
+        } catch (Exception e) {
+            log.error("Failed to fetch restaurant detail from API", e);
+            restaurantResponse.setCategory("기타");
+            return restaurantResponse;
+        }
     }
 
     private String extractCategory(String overview ) {
@@ -97,6 +101,8 @@ public class RestaurantServiceImpl implements RestaurantService {
                     .toList();
             restaurantResponse.setHashtags(list);
         } catch (Exception e) {
+            restaurantResponse.setPlaytime(null);
+            restaurantResponse.setHashtags(Collections.emptyList());
             log.error("Failed to fetch restaurant detail from API", e);
         }
 
