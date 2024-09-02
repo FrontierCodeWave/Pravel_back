@@ -31,4 +31,7 @@ public class Plan {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plan")
     private List<Schedule> schedules;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PlanImage planImage;
 }

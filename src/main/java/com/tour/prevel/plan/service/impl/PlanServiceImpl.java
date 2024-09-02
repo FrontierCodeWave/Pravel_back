@@ -1,10 +1,12 @@
 package com.tour.prevel.plan.service.impl;
 
 import com.tour.prevel.plan.domain.Plan;
+import com.tour.prevel.plan.domain.PlanImage;
 import com.tour.prevel.plan.domain.PlanStatus;
 import com.tour.prevel.plan.dto.CreatePlanRequest;
 import com.tour.prevel.plan.dto.ScheduleResponse;
 import com.tour.prevel.plan.mapper.PlanMapper;
+import com.tour.prevel.plan.repository.PlanImageRepository;
 import com.tour.prevel.plan.repository.PlanQueryRepository;
 import com.tour.prevel.plan.repository.PlanRepository;
 import com.tour.prevel.plan.service.PlanService;
@@ -19,6 +21,7 @@ import java.util.List;
 public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
+    private final PlanImageRepository planImageRepository;
     private final PlanQueryRepository planQueryRepository;
     private final PlanMapper planMapper;
 
@@ -32,7 +35,14 @@ public class PlanServiceImpl implements PlanService {
                 .startDate(LocalDate.parse(request.startDate()))
                 .endDate(LocalDate.parse(request.endDate()))
                 .status(PlanStatus.REVISION)
+                .planImage(getRandomPlanImage())
                 .build());
+    }
+
+    private PlanImage getRandomPlanImage() {
+        List<PlanImage> planImages = planImageRepository.findAll();
+        int randomIndex = (int) (Math.random() * planImages.size());
+        return planImages.get(randomIndex);
     }
 
     @Override
