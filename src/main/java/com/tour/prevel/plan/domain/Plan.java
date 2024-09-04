@@ -22,6 +22,8 @@ public class Plan {
     private String location;
     private int adult;
     private int child;
+    private String startPoint;
+    private String endPoint;
 
     private LocalDate startDate;
     private LocalDate endDate;
