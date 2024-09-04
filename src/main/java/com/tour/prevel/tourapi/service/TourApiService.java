@@ -5,10 +5,11 @@ import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
 import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
+import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 
 public interface TourApiService {
 
-    String createQueryParameters(double mapX, double mapY, Integer pageNo, ContentTypeId contentTypeId);
+    String createQueryParameters(ListParamsDto params);
     String createQueryParameters(int contentId);
     String createQueryParameters(String contentId, String contentTypeId);
     String createQueryParameters(String search, ContentTypeId contentTypeId);

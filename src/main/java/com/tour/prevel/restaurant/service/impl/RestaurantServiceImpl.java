@@ -11,6 +11,7 @@ import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
 import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
+import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantListResponse getRestaurantList(RestaurantListRequest request) {
-        String queryParameters = tourApiService.createQueryParameters(request.x(), request.y(), request.pageNo(), ContentTypeId.RESTAURANT);
+        String queryParameters = tourApiService.createQueryParameters(
+                ListParamsDto.builder()
+                    .mapX(request.x())
+                    .mapY(request.y())
+                    .radius(request.radius())
+                    .makers(request.makers())
+                    .pageNo(Optional.ofNullable(request.pageNo()).orElse(1))
+                    .contentTypeId(ContentTypeId.RESTAURANT)
+                    .build());
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
         List<RestaurantResponse> restaurantResponses = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());

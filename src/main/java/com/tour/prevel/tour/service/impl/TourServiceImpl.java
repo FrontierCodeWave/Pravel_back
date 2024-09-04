@@ -8,6 +8,7 @@ import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
 import com.tour.prevel.tourapi.dto.TourApiImageListRequest;
 import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
+import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tour.mapper.TourMapper;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,7 +36,15 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourListResponse getTourList(TourListRequest request) {
-        String queryParameters = tourApiService.createQueryParameters(request.x(), request.y(), request.pageNo(), ContentTypeId.TOUR);
+        String queryParameters = tourApiService.createQueryParameters(
+                ListParamsDto.builder()
+                        .mapX(request.x())
+                        .mapY(request.y())
+                        .radius(request.radius())
+                        .makers(request.makers())
+                        .pageNo(Optional.ofNullable(request.pageNo()).orElse(1))
+                        .contentTypeId(ContentTypeId.TOUR)
+                        .build());
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
         List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());

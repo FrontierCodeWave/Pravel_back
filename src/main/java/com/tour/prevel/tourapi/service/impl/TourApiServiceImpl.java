@@ -4,6 +4,7 @@ import com.tour.prevel.config.tourapi.TourApiProperties;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.*;
+import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,12 +95,14 @@ public class TourApiServiceImpl implements TourApiService {
     }
 
     @Override
-    public String createQueryParameters(double mapX, double mapY, Integer pageNo, ContentTypeId contentTypeId) {
+    public String createQueryParameters(ListParamsDto params) {
         return TourApiListRequest.builder()
-                .mapX(String.valueOf(mapX))
-                .mapY(String.valueOf(mapY))
-                .pageNo(pageNo == null ? 1 : pageNo)
-                .contentTypeId(contentTypeId.getId())
+                .mapX(String.valueOf(params.getMapX()))
+                .mapY(String.valueOf(params.getMapY()))
+                .pageNo(params.getPageNo())
+                .contentTypeId(params.getContentTypeId().getId())
+                .markers(params.getMakers())
+                .radius(params.getRadius())
                 .serviceKey(properties.getKey())
                 .build()
                 .toQueryParameters();
