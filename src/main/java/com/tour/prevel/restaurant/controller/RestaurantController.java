@@ -46,7 +46,7 @@ public class RestaurantController {
     @ApiOperation("맛집 이미지 조회")
     public List<String> getTourImage(
             @PathVariable String contentId,
-            @PageableDefault(size = 9, page = 1) int page) {
+            @PageableDefault(size = 9, page = 1) @RequestParam(required = false, defaultValue = "1") int page) {
         return restaurantService.getRestaurantImage(contentId, page);
     }
 }

@@ -46,7 +46,7 @@ public class TourController {
     @ApiOperation("관광지 이미지 조회")
     public List<String> getTourImage(
             @PathVariable String contentId,
-            @PageableDefault(size = 9, page = 1) int page) {
+            @PageableDefault(size = 9, page = 1) @RequestParam(required = false, defaultValue = "1") int page) {
         return tourService.getTourImage(contentId, page);
     }
 }
