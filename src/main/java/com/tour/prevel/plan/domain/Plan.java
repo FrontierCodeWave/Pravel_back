@@ -1,5 +1,6 @@
 package com.tour.prevel.plan.domain;
 
+import com.tour.prevel.auth.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,9 @@ public class Plan {
 
     @Enumerated(EnumType.STRING)
     private PlanStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "plan")
     private List<Schedule> schedules;

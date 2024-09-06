@@ -6,6 +6,7 @@ import com.tour.prevel.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,8 +21,11 @@ public class PlanController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
-    public void createPlan(@RequestBody CreatePlanRequest request) {
-        planService.createPlan(request);
+    public void createPlan(
+            @RequestBody CreatePlanRequest request,
+            Authentication auth
+    ) {
+        planService.createPlan(request, auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -7,6 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PlanService {
-    void createPlan(CreatePlanRequest request);
+    void createPlan(CreatePlanRequest request, String userId);
     List<ScheduleResponse> getScheduleList(String id, LocalDate date);
 }

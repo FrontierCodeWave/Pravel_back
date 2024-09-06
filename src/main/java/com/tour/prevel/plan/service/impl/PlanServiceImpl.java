@@ -1,5 +1,7 @@
 package com.tour.prevel.plan.service.impl;
 
+import com.tour.prevel.auth.domain.User;
+import com.tour.prevel.auth.repository.AuthRepository;
 import com.tour.prevel.plan.domain.Plan;
 import com.tour.prevel.plan.domain.PlanImage;
 import com.tour.prevel.plan.domain.PlanStatus;
@@ -25,8 +27,11 @@ public class PlanServiceImpl implements PlanService {
     private final PlanQueryRepository planQueryRepository;
     private final PlanMapper planMapper;
 
+    private final AuthRepository authRepository;
+
     @Override
-    public void createPlan(CreatePlanRequest request) {
+    public void createPlan(CreatePlanRequest request, String userId) {
+        User user = authRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자 정보가 없습니다."));
         planRepository.save(Plan.builder()
                 .title(request.title())
                 .adult(request.adult())
@@ -36,6 +41,7 @@ public class PlanServiceImpl implements PlanService {
                 .endDate(LocalDate.parse(request.endDate()))
                 .status(PlanStatus.REVISION)
                 .planImage(getRandomPlanImage())
+                .user(user)
                 .build());
     }
 
