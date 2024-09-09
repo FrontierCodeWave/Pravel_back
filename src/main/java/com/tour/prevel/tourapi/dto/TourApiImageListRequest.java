@@ -8,6 +8,7 @@ public class TourApiImageListRequest extends ApiRequest {
     protected final String subImageYN = "Y";
     protected String contentId;
     protected int pageNo;
+    protected int numOfRows = 9;
 
     @Builder
     public TourApiImageListRequest(String serviceKey, String contentId, int pageNo) {
