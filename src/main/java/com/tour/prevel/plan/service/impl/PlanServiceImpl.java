@@ -2,6 +2,8 @@ package com.tour.prevel.plan.service.impl;
 
 import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.auth.repository.AuthRepository;
+import com.tour.prevel.plan.dto.PlanHistoryResponse;
+import com.tour.prevel.plan.dto.RecommandPlanResponse;
 import com.tour.prevel.plan.domain.Plan;
 import com.tour.prevel.plan.domain.PlanImage;
 import com.tour.prevel.plan.domain.PlanStatus;
@@ -54,5 +56,16 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<ScheduleResponse> getScheduleList(String id, LocalDate date) {
         return planMapper.toScheduleResponseList(planQueryRepository.getScheduleList(id, date));
+    }
+
+    @Override
+    public List<RecommandPlanResponse> getRecommandPlanList(String userId) {
+        List<Plan> recommandPlanList = planQueryRepository.getRecommandPlanList(userId);
+        return planMapper.toRecomandPlanResponseList(recommandPlanList);
+    }
+
+    @Override
+    public List<PlanHistoryResponse> getPlanHistoryList(String userId) {
+        return planMapper.toPlanHistoryResponseList(planQueryRepository.getPlanList(userId));
     }
 }

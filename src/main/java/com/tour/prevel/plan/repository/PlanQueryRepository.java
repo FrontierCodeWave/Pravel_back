@@ -1,6 +1,7 @@
 package com.tour.prevel.plan.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tour.prevel.plan.domain.Plan;
 import com.tour.prevel.plan.domain.Schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.tour.prevel.plan.domain.QSchedule.schedule;
+import static com.tour.prevel.plan.domain.QPlan.plan;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,6 +25,19 @@ public class PlanQueryRepository {
                 .where(schedule.plan.id.eq(Long.parseLong(id))
                         .and(schedule.scheduleDate.eq(date)))
                 .orderBy(schedule.scheduleOrder.desc())
+                .fetch();
+    }
+
+    public List<Plan> getRecommandPlanList(String userId) {
+        return queryFactory.selectFrom(plan)
+                .where(plan.user.email.eq(userId))
+                .fetch()
+                .stream().limit(4).toList();
+    }
+
+    public List<Plan> getPlanList(String userId) {
+        return queryFactory.selectFrom(plan)
+                .where(plan.user.email.eq(userId))
                 .fetch();
     }
 }

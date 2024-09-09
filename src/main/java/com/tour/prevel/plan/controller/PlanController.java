@@ -1,5 +1,7 @@
 package com.tour.prevel.plan.controller;
 
+import com.tour.prevel.plan.dto.PlanHistoryResponse;
+import com.tour.prevel.plan.dto.RecommandPlanResponse;
 import com.tour.prevel.plan.dto.CreatePlanRequest;
 import com.tour.prevel.plan.dto.ScheduleResponse;
 import com.tour.prevel.plan.service.PlanService;
@@ -35,5 +37,21 @@ public class PlanController {
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
         return planService.getScheduleList(id, date);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/recommand")
+    public List<RecommandPlanResponse> getRecommandPlanList(
+            Authentication auth
+    ) {
+        return planService.getRecommandPlanList(auth.getName());
+    }
+
+    @ResponseStatus
+    @GetMapping("/history")
+    public List<PlanHistoryResponse> getPlanHistoryList(
+            Authentication auth
+    ) {
+        return planService.getPlanHistoryList(auth.getName());
     }
 }
