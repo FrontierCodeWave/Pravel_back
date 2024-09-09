@@ -49,7 +49,10 @@ public class TourServiceImpl implements TourService {
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
         List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());
         List<TourResponse> list = tourResponses.stream()
-                .map((response) -> addInform(response))
+                .map((response) -> {
+                    response.setCategory("관광");
+                    return addInform(response);
+                })
                 .toList();
 
         return TourListResponse.builder()

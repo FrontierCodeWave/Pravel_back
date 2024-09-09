@@ -17,6 +17,8 @@ public class TourResponse implements TourCommonResponse {
     private String contentTypeId;
     @Setter
     private String address;
+    @Setter
+    private String category;
 
     @Setter
     private String playtime;
