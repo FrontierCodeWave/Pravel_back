@@ -160,14 +160,4 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         return addInform(restaurantDetailResponse);
     }
-
-    @Override
-    public List<String> getRestaurantImage(String contentId, int page) {
-        String queryParameters = tourApiService.createQueryParameters(contentId, page);
-
-        TourApiImageListResponse.Body body = tourApiService.fetchImageList(TourApiUrl.IMAGE_LIST, queryParameters)
-                .getResponse().getBody();
-        return body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
-                .toList();
-    }
 }

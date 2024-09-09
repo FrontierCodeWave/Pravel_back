@@ -12,5 +12,4 @@ public interface RestaurantService {
     RestaurantListResponse getRestaurantList(RestaurantListRequest request);
     RestaurantListResponse getRestaurantListBySearch(String search);
     RestaurantDetailResponse getRestaurant(int contentId);
-    List<String> getRestaurantImage(String contentId, int page);
 }
