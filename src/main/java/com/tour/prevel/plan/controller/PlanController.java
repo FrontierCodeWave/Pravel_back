@@ -47,7 +47,7 @@ public class PlanController {
         return planService.getRecommandPlanList(auth.getName());
     }
 
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/history")
     public List<PlanHistoryResponse> getPlanHistoryList(
             Authentication auth
