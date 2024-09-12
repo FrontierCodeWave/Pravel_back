@@ -13,4 +13,5 @@ public interface PlanService {
     List<ScheduleResponse> getScheduleList(String id, LocalDate date);
     List<RecommandPlanResponse> getRecommandPlanList(String userId);
     List<PlanHistoryResponse> getPlanHistoryList(String userId);
+    PlanHistoryResponse getPlanRecord(Long id, String name);
 }

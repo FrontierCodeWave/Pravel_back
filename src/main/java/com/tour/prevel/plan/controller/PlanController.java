@@ -54,4 +54,13 @@ public class PlanController {
     ) {
         return planService.getPlanHistoryList(auth.getName());
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}/record")
+    public PlanHistoryResponse getPlanRecord(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        return planService.getPlanRecord(id, auth.getName());
+    }
 }

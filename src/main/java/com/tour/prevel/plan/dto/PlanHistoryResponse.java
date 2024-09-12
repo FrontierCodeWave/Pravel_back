@@ -8,5 +8,6 @@ public record PlanHistoryResponse(
         String title,
         String url,
         String startDate,
-        String endDate
+        String endDate,
+        String location
 ) { }

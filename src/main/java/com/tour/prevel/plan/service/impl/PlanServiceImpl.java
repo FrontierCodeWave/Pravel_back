@@ -68,4 +68,10 @@ public class PlanServiceImpl implements PlanService {
     public List<PlanHistoryResponse> getPlanHistoryList(String userId) {
         return planMapper.toPlanHistoryResponseList(planQueryRepository.getPlanList(userId));
     }
+
+    @Override
+    public PlanHistoryResponse getPlanRecord(Long id, String name) {
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 계획이 없습니다."));
+        return planMapper.toPlanHistoryResponse(plan);
+    }
 }
