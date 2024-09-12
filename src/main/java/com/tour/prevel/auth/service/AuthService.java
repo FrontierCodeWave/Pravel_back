@@ -8,4 +8,5 @@ public interface AuthService {
     UserResponse createUser(CreateUserRequest userRequest);
     boolean isEmailExists(String email);
     UserResponse getUser(String email);
+    UserResponse updateNickname(String userId, String nickname);
 }

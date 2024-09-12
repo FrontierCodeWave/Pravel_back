@@ -83,4 +83,12 @@ public class AuthServiceImpl implements AuthService {
     public boolean isEmailExists(String email) {
         return authRepository.existsById(email);
     }
+
+    @Override
+    public UserResponse updateNickname(String userId, String nickname) {
+        User user = authRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setNickname(nickname);
+        return authMapper.toUserResponse(authRepository.save(user));
+    }
 }

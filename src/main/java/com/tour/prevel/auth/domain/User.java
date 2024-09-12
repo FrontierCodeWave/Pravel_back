@@ -20,6 +20,7 @@ public class User extends CreatedTimeEntity implements UserDetails {
     private String email;
 
     private String password;
+    @Setter
     private String nickname;
     private String profileImg;
 
