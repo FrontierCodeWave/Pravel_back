@@ -33,8 +33,8 @@ spring:
 auth:
   key:
     expiration-time: 86400000
-    public: ${PUBLIC_KEY}
-    private: ${PRIVATE_KEY}
+    public-key: ${PUBLIC_KEY}
+    private-key: ${PRIVATE_KEY}
 
 ---
 tour:
