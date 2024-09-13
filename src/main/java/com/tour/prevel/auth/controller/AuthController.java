@@ -20,15 +20,9 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{email}")
-    public UserResponse getUser(@PathVariable String email, @RequestBody String token) {
-        String userEmail = jwtUtil.getUserId(token);
-
-        if (!userEmail.equals(email)) {
-            throw new IllegalArgumentException("Invalid token");
-        }
-
-        return authService.getUser(userEmail);
+    @GetMapping
+    public UserResponse getUser(Authentication auth) {
+        return authService.getUser(auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)
