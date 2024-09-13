@@ -8,6 +8,7 @@ import com.tour.prevel.auth.repository.AuthRepository;
 import com.tour.prevel.auth.service.AuthService;
 import com.tour.prevel.auth.utils.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,6 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
+    private final PasswordEncoder encoder;
 
     @Override
     public UserResponse createUser(CreateUserRequest userRequest) {
@@ -90,5 +92,21 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setNickname(nickname);
         return authMapper.toUserResponse(authRepository.save(user));
+    }
+
+    @Override
+    public UserResponse updatePassword(String userId, String password) {
+        User user = authRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setPassword(passwordEncoder.encode(password));
+        return authMapper.toUserResponse(authRepository.save(user));
+    }
+
+    @Override
+    public boolean checkPassword(String userId, String password) {
+        User user = authRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return encoder.matches(password, user.getPassword());
     }
 }

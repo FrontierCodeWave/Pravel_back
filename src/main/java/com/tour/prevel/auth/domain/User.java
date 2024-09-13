@@ -19,6 +19,7 @@ public class User extends CreatedTimeEntity implements UserDetails {
     @Id
     private String email;
 
+    @Setter
     private String password;
     @Setter
     private String nickname;

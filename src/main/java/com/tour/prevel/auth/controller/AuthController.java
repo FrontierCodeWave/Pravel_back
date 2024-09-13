@@ -54,4 +54,16 @@ public class AuthController {
     public UserResponse updateNickname(@RequestBody String nickname, Authentication auth) {
         return authService.updateNickname(auth.getName(), nickname);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("check-password")
+    public boolean checkPassword(@RequestBody String password, Authentication auth) {
+        return authService.checkPassword(auth.getName(), password);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/password")
+    public UserResponse updatePassword(@RequestBody String password, Authentication auth) {
+        return authService.updatePassword(auth.getName(), password);
+    }
 }

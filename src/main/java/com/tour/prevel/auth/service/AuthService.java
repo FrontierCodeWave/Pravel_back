@@ -9,4 +9,6 @@ public interface AuthService {
     boolean isEmailExists(String email);
     UserResponse getUser(String email);
     UserResponse updateNickname(String userId, String nickname);
+    boolean checkPassword(String userId, String password);
+    UserResponse updatePassword(String userId, String password);
 }
