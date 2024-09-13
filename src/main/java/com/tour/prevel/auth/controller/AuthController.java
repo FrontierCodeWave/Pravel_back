@@ -32,7 +32,7 @@ public class AuthController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @GetMapping("verify")
     public boolean verifyUser() {
         return true;
     }
