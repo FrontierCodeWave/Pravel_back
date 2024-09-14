@@ -136,12 +136,16 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<String> getTourImage(String contentId, int page) {
+    public TourImageListResponse getTourImage(String contentId, int page) {
         String queryParameters = tourApiService.createQueryParameters(contentId, page);
 
         TourApiImageListResponse.Body body = tourApiService.fetchImageList(TourApiUrl.IMAGE_LIST, queryParameters)
                 .getResponse().getBody();
-        return body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
+        List<String> list = body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
                 .toList();
+        return TourImageListResponse.builder()
+                .list(list)
+                .totalCount(body.getTotalCount())
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.tour.prevel.tour.controller;
 
 import com.tour.prevel.tour.dto.TourDetailResponse;
+import com.tour.prevel.tour.dto.TourImageListResponse;
 import com.tour.prevel.tour.dto.TourListRequest;
 import com.tour.prevel.tour.dto.TourListResponse;
 import com.tour.prevel.tour.service.TourService;
@@ -44,7 +45,7 @@ public class TourController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{contentId}/image")
     @ApiOperation("관광지 이미지 조회")
-    public List<String> getTourImage(
+    public TourImageListResponse getTourImage(
             @PathVariable String contentId,
             @PageableDefault(size = 9, page = 1) @RequestParam(required = false, defaultValue = "1") int page) {
         return tourService.getTourImage(contentId, page);
