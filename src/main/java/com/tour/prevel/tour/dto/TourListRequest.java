@@ -7,6 +7,6 @@ public record TourListRequest(
         double x,
         double y,
         Integer pageNo,
-        Integer makers,
+        Integer markers,
         Integer radius
 ) { }

@@ -11,6 +11,6 @@ public class ListParamsDto {
     private double mapY;
     private Integer pageNo;
     private ContentTypeId contentTypeId;
-    private Integer makers = 10;
+    private Integer markers = 10;
     private Integer radius = 1000;
 }

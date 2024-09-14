@@ -38,7 +38,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                     .mapX(request.x())
                     .mapY(request.y())
                     .radius(request.radius())
-                    .makers(request.makers())
+                    .markers(request.markers())
                     .pageNo(request.pageNo())
                     .contentTypeId(ContentTypeId.RESTAURANT)
                     .build());

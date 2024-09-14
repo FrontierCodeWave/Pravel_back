@@ -41,7 +41,7 @@ public class TourServiceImpl implements TourService {
                         .mapX(request.x())
                         .mapY(request.y())
                         .radius(request.radius())
-                        .makers(request.makers())
+                        .markers(request.markers())
                         .pageNo(request.pageNo())
                         .contentTypeId(ContentTypeId.TOUR)
                         .build());

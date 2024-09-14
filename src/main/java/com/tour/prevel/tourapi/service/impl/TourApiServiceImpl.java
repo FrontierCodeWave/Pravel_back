@@ -101,7 +101,7 @@ public class TourApiServiceImpl implements TourApiService {
                 .mapY(String.valueOf(params.getMapY()))
                 .pageNo(params.getPageNo())
                 .contentTypeId(params.getContentTypeId().getId())
-                .markers(params.getMakers())
+                .markers(params.getMarkers())
                 .radius(params.getRadius())
                 .serviceKey(properties.getKey())
                 .build()
