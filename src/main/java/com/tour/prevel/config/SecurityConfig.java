@@ -63,7 +63,7 @@ public class SecurityConfig {
         http
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(loginAuthenticationFilter(), BasicAuthenticationFilter.class)
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configurationSource(CorsConfig.corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(
                         oauth2 -> oauth2.jwt(Customizer.withDefaults())
