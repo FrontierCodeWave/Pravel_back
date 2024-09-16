@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -147,5 +148,20 @@ public class TourServiceImpl implements TourService {
                 .list(list)
                 .totalCount(body.getTotalCount())
                 .build();
+    }
+
+    @Override
+    public List<KeywordResponse> getKeywordList(String keyword) {
+        String tourQueryParameters = tourApiService.createQueryParameters(URLEncoder.encode(keyword), ContentTypeId.TOUR);
+        String foodQueryParameters = tourApiService.createQueryParameters(URLEncoder.encode(keyword), ContentTypeId.RESTAURANT);
+
+        String[] params = {tourQueryParameters, foodQueryParameters};
+        return Arrays.stream(params).toList().stream()
+                .map((param) ->
+                        tourApiService.fetchList(TourApiUrl.SEARCH_LIST, param).getResponse().getBody())
+                .map((body) ->
+                        tourMapper.toKeywordListResponse(body.getItems().getItem()))
+                .flatMap(List::stream)
+                .toList();
     }
 }

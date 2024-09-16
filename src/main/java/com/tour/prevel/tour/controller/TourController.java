@@ -1,9 +1,6 @@
 package com.tour.prevel.tour.controller;
 
-import com.tour.prevel.tour.dto.TourDetailResponse;
-import com.tour.prevel.tour.dto.TourImageListResponse;
-import com.tour.prevel.tour.dto.TourListRequest;
-import com.tour.prevel.tour.dto.TourListResponse;
+import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tour.service.TourService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +46,14 @@ public class TourController {
             @PathVariable String contentId,
             @PageableDefault(size = 9, page = 1) @RequestParam(required = false, defaultValue = "1") int page) {
         return tourService.getTourImage(contentId, page);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/keywords")
+    @ApiOperation("키워드 조회")
+    public List<KeywordResponse> getKeywordList(
+            String keyword
+    ) {
+        return tourService.getKeywordList(keyword);
     }
 }

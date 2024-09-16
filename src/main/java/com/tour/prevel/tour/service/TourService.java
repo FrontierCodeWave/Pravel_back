@@ -10,4 +10,5 @@ public interface TourService {
     TourListResponse getTourListBySearch(String search);
     TourDetailResponse getTour(int contentId);
     TourImageListResponse getTourImage(String contentId, int page);
+    List<KeywordResponse> getKeywordList(String keyword);
 }

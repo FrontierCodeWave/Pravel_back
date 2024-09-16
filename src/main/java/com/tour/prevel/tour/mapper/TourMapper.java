@@ -1,7 +1,9 @@
 package com.tour.prevel.tour.mapper;
 
+import com.tour.prevel.tour.dto.KeywordResponse;
 import com.tour.prevel.tour.dto.TourDetailResponse;
 import com.tour.prevel.tour.dto.TourResponse;
+import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import org.mapstruct.*;
 
@@ -30,4 +32,19 @@ public interface TourMapper {
     @Mapping(target = "contentId", source = "contentid")
     @Mapping(target = "contentTypeId", source = "contenttypeid")
     TourDetailResponse toTourDetailResponse(TourApiListResponse.Item apiResponse);
+
+    @IterableMapping(qualifiedByName = "toKeywordResponse")
+    List<KeywordResponse> toKeywordListResponse(List<TourApiListResponse.Item> item);
+
+    @Named("toKeywordResponse")
+    @Mapping(target = "keyword", source = "title")
+    @Mapping(target = "address", source = "addr1")
+    @Mapping(target = "category", source = "contenttypeid", qualifiedByName = "getCategory")
+    KeywordResponse toKeywordResponse(TourApiListResponse.Item apiResponse);
+
+    @Named("getCategory")
+    public static String getCategory(String contentTypeId) {
+        return contentTypeId.equals(ContentTypeId.TOUR.getId())
+                ? ContentTypeId.TOUR.getId() : ContentTypeId.RESTAURANT.getId();
+    }
 }
