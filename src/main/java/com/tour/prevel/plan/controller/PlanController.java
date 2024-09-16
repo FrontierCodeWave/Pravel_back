@@ -63,4 +63,12 @@ public class PlanController {
     ) {
         return planService.getPlanRecord(id, auth.getName());
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/count")
+    public int getPlanCount(
+            Authentication auth
+    ) {
+        return planService.getPlanCount(auth.getName());
+    }
 }

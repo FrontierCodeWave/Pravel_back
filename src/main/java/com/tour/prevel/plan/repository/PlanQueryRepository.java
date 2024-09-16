@@ -40,4 +40,12 @@ public class PlanQueryRepository {
                 .where(plan.user.email.eq(userId))
                 .fetch();
     }
+
+    public int getPlanCount(String userId) {
+        return (int) queryFactory.selectFrom(plan)
+                .where(plan.user.email.eq(userId)
+                        .and(plan.startDate.year().eq(LocalDate.now().getYear()))
+                )
+                .fetchCount();
+    }
 }

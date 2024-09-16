@@ -74,4 +74,9 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = planRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 계획이 없습니다."));
         return planMapper.toPlanHistoryResponse(plan);
     }
+
+    @Override
+    public int getPlanCount(String userId) {
+        return planQueryRepository.getPlanCount(userId);
+    }
 }

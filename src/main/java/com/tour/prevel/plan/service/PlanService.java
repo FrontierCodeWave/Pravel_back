@@ -14,4 +14,5 @@ public interface PlanService {
     List<RecommandPlanResponse> getRecommandPlanList(String userId);
     List<PlanHistoryResponse> getPlanHistoryList(String userId);
     PlanHistoryResponse getPlanRecord(Long id, String name);
+    int getPlanCount(String userId);
 }
