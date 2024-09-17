@@ -95,6 +95,8 @@ public class AuthServiceImpl implements AuthService {
     public UserResponse updateUser(String userId, MultipartFile profile, String nickname) {
         Optional.ofNullable(profile)
                 .ifPresent(file -> {
+                    if (file.isEmpty()) return;
+
                     String newFileName = fileService.uploadProfile(file);
 
                     if (!StringUtils.hasText(newFileName)) return;
