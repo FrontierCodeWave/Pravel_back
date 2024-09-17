@@ -13,13 +13,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        try {
-            File absoluteFile = new ClassPathResource("static/profile").getFile().getAbsoluteFile();
-            registry.addResourceHandler("/profile/**")
-                    .addResourceLocations("classpath:/static/profile/");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            File absoluteFile = new ClassPathResource("static/profile").getFile().getAbsoluteFile();
+//            registry.addResourceHandler("/profile/**")
+//                    .addResourceLocations("classpath:/static/profile/");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 }
