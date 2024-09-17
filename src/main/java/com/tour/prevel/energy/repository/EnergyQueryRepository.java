@@ -70,12 +70,18 @@ public class EnergyQueryRepository {
                     UserEnergy gainUserEnergy = energy.get(userEnergy);
                     Energy gainEnergy = energy.get(energy1);
                     UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
-                    int restEnergy = gainEnergy.getEnergy() - usedEnergyResponse.usedEnergy();
+                    int restEnergy = gainEnergy.getEnergy() - (Objects.nonNull(usedEnergyResponse)
+                            ? usedEnergyResponse.usedEnergy()
+                            : 0);
                     return used ? restEnergy == 0 : restEnergy > 0;
                 }).map((energy) -> {
                     UserEnergy gainUserEnergy = energy.get(userEnergy);
                     Energy gainEnergy = energy.get(energy1);
-                    UsedEnergyResponse usedEnergyResponse = usedEnergyResponseMap.get(gainUserEnergy.getId());
+                    UsedEnergyResponse usedEnergyResponse = Optional
+                            .ofNullable(usedEnergyResponseMap.get(gainUserEnergy.getId()))
+                            .orElse(UsedEnergyResponse.builder()
+                                    .usedEnergy(0)
+                                    .usedDate(null).build());
 
                     return EnergyResponse.builder()
                             .id(gainUserEnergy.getId())
