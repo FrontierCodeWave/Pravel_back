@@ -7,11 +7,15 @@ import com.tour.prevel.auth.mapper.AuthMapper;
 import com.tour.prevel.auth.repository.AuthRepository;
 import com.tour.prevel.auth.service.AuthService;
 import com.tour.prevel.auth.utils.Validator;
+import com.tour.prevel.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final AuthMapper authMapper;
     private final PasswordEncoder encoder;
+    private final FileService fileService;
 
     @Override
     public UserResponse createUser(CreateUserRequest userRequest) {
@@ -87,7 +92,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserResponse updateNickname(String userId, String nickname) {
+    public UserResponse updateUser(String userId, MultipartFile profile, String nickname) {
+        Optional.ofNullable(profile)
+                .ifPresent(file -> {
+                    String newFileName = fileService.uploadProfile(file);
+
+                    if (!StringUtils.hasText(newFileName)) return;
+
+                    User user = authRepository.findById(userId)
+                            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                    user.setOriginProfileImg(file.getOriginalFilename());
+                    user.setProfileImg(newFileName);
+                });
         User user = authRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setNickname(nickname);

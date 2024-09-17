@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -44,9 +45,11 @@ public class AuthController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/nickname")
-    public UserResponse updateNickname(@RequestBody String nickname, Authentication auth) {
-        return authService.updateNickname(auth.getName(), nickname);
+    @PutMapping
+    public UserResponse updateUser(
+            MultipartFile profile, String nickname,
+            Authentication auth) {
+        return authService.updateUser(auth.getName(), profile, nickname);
     }
 
     @ResponseStatus(HttpStatus.OK)

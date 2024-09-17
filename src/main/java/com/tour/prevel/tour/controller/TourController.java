@@ -4,12 +4,9 @@ import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tour.service.TourService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,14 +43,5 @@ public class TourController {
             @PathVariable String contentId,
             @PageableDefault(size = 9, page = 1) @RequestParam(required = false, defaultValue = "1") int page) {
         return tourService.getTourImage(contentId, page);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/keywords")
-    @ApiOperation("키워드 조회")
-    public List<KeywordResponse> getKeywordList(
-            String keyword
-    ) {
-        return tourService.getKeywordList(keyword);
     }
 }

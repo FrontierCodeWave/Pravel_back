@@ -55,7 +55,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico", "/errors/**").permitAll()
+                        .requestMatchers("/images/**", "/css/**", "/js/**", "/favicon.ico", "/errors/**", "/profile/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/checkid/**", "/api/auth/join").permitAll()
                         .anyRequest().permitAll()
                 );

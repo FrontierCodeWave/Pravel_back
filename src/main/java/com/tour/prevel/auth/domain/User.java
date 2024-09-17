@@ -23,13 +23,17 @@ public class User extends CreatedTimeEntity implements UserDetails {
     private String password;
     @Setter
     private String nickname;
+    @Setter
+    private String originProfileImg;
+    @Setter
     private String profileImg;
 
     @Builder
-    public User(String email, String password, String nickname, String profileImg) {
+    public User(String email, String password, String nickname, String originProfileImg, String profileImg) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.originProfileImg = originProfileImg;
         this.profileImg = profileImg;
     }
 
