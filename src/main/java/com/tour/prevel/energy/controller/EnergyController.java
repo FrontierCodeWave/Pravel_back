@@ -26,4 +26,12 @@ public class EnergyController {
     ) {
         return energyService.getEnergyListById(auth.getName(), used);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/availability")
+    public boolean isRewardAvailable(
+            Authentication auth
+    ) {
+        return energyService.isRewardAvailable(auth.getName());
+    }
 }

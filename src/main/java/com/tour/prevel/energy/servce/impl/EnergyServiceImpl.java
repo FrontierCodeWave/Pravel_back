@@ -13,6 +13,7 @@ import java.util.List;
 public class EnergyServiceImpl implements EnergyService {
 
     private final EnergyQueryRepository energyQueryRepository;
+    private final int REWARD_THRESHOLD = 100;
 
     @Override
     public int getCurrentEnergyCount(String userId) {
@@ -22,5 +23,10 @@ public class EnergyServiceImpl implements EnergyService {
     @Override
     public List<EnergyResponse> getEnergyListById(String userId, boolean used) {
         return energyQueryRepository.getEnergyListById(userId, used);
+    }
+
+    @Override
+    public boolean isRewardAvailable(String userId) {
+        return getCurrentEnergyCount(userId) >= REWARD_THRESHOLD;
     }
 }
