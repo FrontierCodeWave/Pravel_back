@@ -40,6 +40,7 @@ public interface TourMapper {
     @Mapping(target = "keyword", source = "title")
     @Mapping(target = "address", source = "addr1")
     @Mapping(target = "category", source = "contenttypeid", qualifiedByName = "getCategory")
+    @Mapping(target = "contentId", source = "contentid")
     KeywordResponse toKeywordResponse(TourApiListResponse.Item apiResponse);
 
     @Named("getCategory")
