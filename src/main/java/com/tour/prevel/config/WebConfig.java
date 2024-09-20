@@ -1,5 +1,6 @@
 package com.tour.prevel.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -11,15 +12,12 @@ import java.io.IOException;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    @Value("${resource.path}")
+    private String resourcePath;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        try {
-//            File absoluteFile = new ClassPathResource("static/profile").getFile().getAbsoluteFile();
-//            registry.addResourceHandler("/profile/**")
-//                    .addResourceLocations("classpath:/static/profile/");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
+        registry.addResourceHandler("/profile/**")
+                .addResourceLocations("file:///" + resourcePath +"/profile/");
     }
 }
