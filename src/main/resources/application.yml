@@ -20,4 +20,6 @@ spring:
 logging:
   config: classpath:logback-spring.xml
 
+resource:
+  path: ${user.home}${file.separator}pravel${file.separator}
 ---
