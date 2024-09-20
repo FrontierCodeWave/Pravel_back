@@ -5,6 +5,7 @@ import com.tour.prevel.plan.dto.RecommandPlanResponse;
 import com.tour.prevel.plan.dto.CreatePlanRequest;
 import com.tour.prevel.plan.dto.ScheduleResponse;
 import com.tour.prevel.plan.service.PlanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class PlanController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
     public void createPlan(
-            @RequestBody CreatePlanRequest request,
+            @RequestBody @Valid CreatePlanRequest request,
             Authentication auth
     ) {
         planService.createPlan(request, auth.getName());

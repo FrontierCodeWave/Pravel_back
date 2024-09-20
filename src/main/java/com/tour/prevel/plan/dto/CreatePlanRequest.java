@@ -1,13 +1,15 @@
 package com.tour.prevel.plan.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record CreatePlanRequest(
-    String location,
-    String startPoint,
-    String endPoint,
+    @NotBlank String location,
+    @NotBlank String startPoint,
+    @NotBlank String endPoint,
     String title,
     int adult,
     int child,
-    String startDate,
-    String endDate
+    @NotBlank String startDate,
+    @NotBlank String endDate
 ) {
 }
