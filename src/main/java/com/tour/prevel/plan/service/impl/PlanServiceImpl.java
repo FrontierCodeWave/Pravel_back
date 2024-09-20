@@ -66,7 +66,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<PlanHistoryResponse> getPlanHistoryList(String userId) {
-        return planMapper.toPlanHistoryResponseList(planQueryRepository.getPlanList(userId));
+        return planMapper.toPlanHistoryResponseList(planQueryRepository.getCompletedPlanList(userId));
     }
 
     @Override

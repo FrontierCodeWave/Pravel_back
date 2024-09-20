@@ -41,6 +41,13 @@ public class PlanQueryRepository {
                 .fetch();
     }
 
+    public List<Plan> getCompletedPlanList(String userId) {
+        return queryFactory.selectFrom(plan)
+                .where(plan.user.email.eq(userId)
+                        .and(plan.endDate.before(LocalDate.now())))
+                .fetch();
+    }
+
     public int getPlanCount(String userId) {
         return (int) queryFactory.selectFrom(plan)
                 .where(plan.user.email.eq(userId)
