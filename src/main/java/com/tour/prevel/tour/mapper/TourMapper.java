@@ -31,6 +31,7 @@ public interface TourMapper {
     @Mapping(target = "thumbnail", source = "firstimage")
     @Mapping(target = "contentId", source = "contentid")
     @Mapping(target = "contentTypeId", source = "contenttypeid")
+    @Mapping(target = "description", source = "overview")
     TourDetailResponse toTourDetailResponse(TourApiListResponse.Item apiResponse);
 
     @IterableMapping(qualifiedByName = "toKeywordResponse")

@@ -15,6 +15,7 @@ public class TourDetailResponse implements TourCommonResponse {
     private String tel;
     private String addr1;
     private String addr2;
+    private String description;
 
     @Setter
     private String playtime;
