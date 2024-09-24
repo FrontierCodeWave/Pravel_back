@@ -36,7 +36,7 @@ public class TourServiceImpl implements TourService {
     private final WishService wishService;
 
     @Override
-    public TourListResponse getTourList(TourListRequest request) {
+    public TourListResponse getTourList(TourListRequest request, String userId) {
         String queryParameters = tourApiService.createQueryParameters(
                 ListParamsDto.builder()
                         .mapX(request.x())
@@ -52,7 +52,7 @@ public class TourServiceImpl implements TourService {
         List<TourResponse> list = tourResponses.stream()
                 .map((response) -> {
                     response.setCategory("관광");
-                    return addInform(response);
+                    return addInform(response, userId);
                 })
                 .toList();
 
@@ -62,7 +62,7 @@ public class TourServiceImpl implements TourService {
                 .build();
     }
 
-    private <T extends TourCommonResponse> T addInform(T tourResponse) {
+    private <T extends TourCommonResponse> T addInform(T tourResponse, String userId) {
         TourApiDetailIntroResponse.Item item;
         try {
             item = tourApiService.fetchDetailIntro(
@@ -102,20 +102,20 @@ public class TourServiceImpl implements TourService {
         tourResponse.setReview(review);
 
         // 위시리스트 여부
-        boolean wished = wishService.isWished("", tourResponse.getContentId());
+        boolean wished = wishService.isWished(userId, tourResponse.getContentId());
         tourResponse.setWish(wished);
 
         return tourResponse;
     }
 
     @Override
-    public TourListResponse getTourListBySearch(String search) {
+    public TourListResponse getTourListBySearch(String search, String userId) {
         String queryParameters = tourApiService.createQueryParameters(URLEncoder.encode(search), ContentTypeId.TOUR);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.SEARCH_LIST, queryParameters).getResponse().getBody();
         List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());
         List<TourResponse> list = tourResponses.stream()
-                .map((response) -> addInform(response))
+                .map((response) -> addInform(response, userId))
                 .toList();
 
         return TourListResponse.builder()
@@ -125,7 +125,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public TourDetailResponse getTour(int contentId) {
+    public TourDetailResponse getTour(int contentId, String userId) {
         String queryParameters = tourApiService.createQueryParameters(contentId);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
@@ -133,7 +133,7 @@ public class TourServiceImpl implements TourService {
         List<TourDetailResponse> tourResponses = tourMapper.toTourDetailListResponse(body.getItems().getItem());
         TourDetailResponse tourDetailResponse = tourResponses.stream().findFirst()
                 .orElseThrow(() -> new NotFound());
-        return addInform(tourDetailResponse);
+        return addInform(tourDetailResponse, userId);
     }
 
     @Override

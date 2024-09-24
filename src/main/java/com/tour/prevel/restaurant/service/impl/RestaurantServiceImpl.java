@@ -9,7 +9,6 @@ import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
-import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
@@ -32,7 +31,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final WishService wishService;
 
     @Override
-    public RestaurantListResponse getRestaurantList(RestaurantListRequest request) {
+    public RestaurantListResponse getRestaurantList(RestaurantListRequest request, String userId) {
         String queryParameters = tourApiService.createQueryParameters(
                 ListParamsDto.builder()
                     .mapX(request.x())
@@ -46,7 +45,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
         List<RestaurantResponse> restaurantResponses = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantResponses.stream()
-                .map((response) -> addInform(response))
+                .map((response) -> addInform(response, userId))
                 .map((response) -> fetchCategory(response))
                 .toList();
 
@@ -93,7 +92,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         return "기타";
     }
 
-    private <T extends RestaurantCommonResponse> T addInform(T restaurantResponse) {
+    private <T extends RestaurantCommonResponse> T addInform(T restaurantResponse, String userId) {
         TourApiDetailIntroResponse.Item item;
         try {
             item = tourApiService.fetchDetailIntro(
@@ -124,20 +123,20 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantResponse.setReview(review);
 
         // 위시리스트 여부
-        boolean wished = wishService.isWished("", restaurantResponse.getContentId());
+        boolean wished = wishService.isWished(userId, restaurantResponse.getContentId());
         restaurantResponse.setWish(wished);
 
         return restaurantResponse;
     }
 
     @Override
-    public RestaurantListResponse getRestaurantListBySearch(String search) {
+    public RestaurantListResponse getRestaurantListBySearch(String search, String userId) {
         String queryParameters = tourApiService.createQueryParameters(URLEncoder.encode(search), ContentTypeId.RESTAURANT);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.SEARCH_LIST, queryParameters).getResponse().getBody();
         List<RestaurantResponse> restaurantListResponse = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
         List<RestaurantResponse> list = restaurantListResponse.stream()
-                .map((response) -> addInform(response))
+                .map((response) -> addInform(response, userId))
                 .map((response) -> fetchCategory(response))
                 .toList();
 
@@ -148,7 +147,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantDetailResponse getRestaurant(int contentId) {
+    public RestaurantDetailResponse getRestaurant(int contentId, String userId) {
         String queryParameters = tourApiService.createQueryParameters(contentId);
 
         TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
@@ -158,6 +157,6 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .orElseThrow(() -> new NotFound());
         restaurantDetailResponse.setCategory(extractCategory(restaurantDetailResponse.getCategory()));
 
-        return addInform(restaurantDetailResponse);
+        return addInform(restaurantDetailResponse, userId);
     }
 }

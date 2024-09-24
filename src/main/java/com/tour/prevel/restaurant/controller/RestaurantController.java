@@ -6,8 +6,8 @@ import com.tour.prevel.restaurant.dto.RestaurantListResponse;
 import com.tour.prevel.restaurant.service.RestaurantService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,21 +23,26 @@ public class RestaurantController {
     @PostMapping
     @ApiOperation("맛집 리스트 조회(버튼)")
     public RestaurantListResponse getTourList(
-            @RequestBody RestaurantListRequest request) {
-        return restaurantService.getRestaurantList(request);
+            @RequestBody RestaurantListRequest request,
+            Authentication auth) {
+        return restaurantService.getRestaurantList(request, auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/search")
     @ApiOperation("맛집 리스트 조회(검색)")
-    public RestaurantListResponse getTourListBySearch(@RequestBody String search) {
-        return restaurantService.getRestaurantListBySearch(search);
+    public RestaurantListResponse getTourListBySearch(
+            @RequestBody String search,
+            Authentication auth) {
+        return restaurantService.getRestaurantListBySearch(search, auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{contentId}")
     @ApiOperation("맛집 상세 정보 조회")
-    public RestaurantDetailResponse getTour(@PathVariable String contentId) {
-        return restaurantService.getRestaurant(Integer.parseInt(contentId));
+    public RestaurantDetailResponse getTour(
+            @PathVariable String contentId,
+            Authentication auth) {
+        return restaurantService.getRestaurant(Integer.parseInt(contentId), auth.getName());
     }
 }
