@@ -23,7 +23,7 @@ public class PlanController {
     private final PlanService planService;
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping
+    @PostMapping("/onboarding")
     public void createPlan(
             @RequestBody @Valid CreatePlanRequest request,
             Authentication auth
