@@ -106,6 +106,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                     .stream().map((food) -> food
                             .replaceAll("\\s*등$", "")
                             .replaceAll("\\s*외$", ""))
+                            .filter((food) -> !food.isEmpty())
                     .toList();
             restaurantResponse.setHashtags(list);
         } catch (Exception e) {
