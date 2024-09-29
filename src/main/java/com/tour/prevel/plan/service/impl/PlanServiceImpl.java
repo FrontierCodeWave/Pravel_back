@@ -3,14 +3,10 @@ package com.tour.prevel.plan.service.impl;
 import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.auth.repository.AuthRepository;
 import com.tour.prevel.global.exception.NotFound;
+import com.tour.prevel.plan.domain.*;
 import com.tour.prevel.plan.dto.*;
-import com.tour.prevel.plan.domain.Plan;
-import com.tour.prevel.plan.domain.PlanImage;
-import com.tour.prevel.plan.domain.PlanStatus;
 import com.tour.prevel.plan.mapper.PlanMapper;
-import com.tour.prevel.plan.repository.PlanImageRepository;
-import com.tour.prevel.plan.repository.PlanQueryRepository;
-import com.tour.prevel.plan.repository.PlanRepository;
+import com.tour.prevel.plan.repository.*;
 import com.tour.prevel.plan.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +22,9 @@ public class PlanServiceImpl implements PlanService {
     private final PlanImageRepository planImageRepository;
     private final PlanQueryRepository planQueryRepository;
     private final PlanMapper planMapper;
+
+    private final ScheduleRepository scheduleRepository;
+    private final ScheduleQueryRepository scheduleQueryRepository;
 
     private final AuthRepository authRepository;
 
@@ -53,7 +52,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<ScheduleResponse> getScheduleListByDate(String id, LocalDate date) {
-        return planMapper.toScheduleResponseList(planQueryRepository.getScheduleListByDate(id, date));
+        return planMapper.toScheduleResponseList(scheduleQueryRepository.getScheduleListByDate(id, date));
     }
 
     @Override
@@ -87,11 +86,32 @@ public class PlanServiceImpl implements PlanService {
         }
 
         List<ScheduleResponse> scheduleList = planMapper.toScheduleResponseList(
-                planQueryRepository.getScheduleListByPlanId(activePlan.getId()));
+                scheduleQueryRepository.getScheduleListByPlanId(activePlan.getId()));
 
         return PlanDetailResponse.builder()
                 .planId(activePlan.getId())
                 .schedules(scheduleList)
                 .build();
+    }
+
+    @Override
+    public void createScheudle(CreateScheduleRequest request) {
+        Plan plan = planRepository.findById(Long.valueOf(request.getPlanId()))
+                .orElseThrow(() -> new NotFound());
+
+        if (plan.getEndDate().isBefore(LocalDate.parse(request.getDate())) ||
+                plan.getStartDate().isAfter(LocalDate.parse(request.getDate()))) {
+            throw new IllegalArgumentException("일정을 벗어난 날짜입니다.");
+        }
+
+        scheduleRepository.save(Schedule.builder()
+                        .plan(plan)
+                        .title(request.getTitle())
+                        .description(request.getDescription())
+                        .category(ScheduleCategory.valueOf(request.getCategory().equals("관광") ? "TOUR" : "FOOD"))
+                        .thumbnail(request.getThumbnail())
+                        .scheduleDate(LocalDate.parse(request.getDate()))
+                        .scheduleOrder(scheduleQueryRepository.getLastOrder(Long.valueOf(request.getPlanId()), request.getDate()) + 1)
+                .build());
     }
 }

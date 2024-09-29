@@ -45,6 +45,13 @@ public class PlanController {
         return planService.getScheduleListByDate(id, date);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/schedule")
+    public void createScheudle(
+            @RequestBody @Valid CreateScheduleRequest request) {
+        planService.createScheudle(request);
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/recommand")
     public List<RecommandPlanResponse> getRecommandPlanList(

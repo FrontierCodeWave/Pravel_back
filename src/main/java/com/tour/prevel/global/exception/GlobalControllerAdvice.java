@@ -27,6 +27,18 @@ public class GlobalControllerAdvice {
 
     private final MessageSource messageSource;
 
+    @ExceptionHandler({ IllegalArgumentException.class })
+    protected ResponseEntity<Object> handleIllegalArgumentException(
+            Exception ex,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            WebRequest webRequest
+    ) {
+        log.error("?? Error occurred while requesting URI={}, HTTP StatusCode={}, Exception={}, Message={}",
+                request.getRequestURI(), response.getStatus(), ex.getClass().getName(), ex.getMessage());
+        return ResponseEntity.badRequest().body(createErrorAttribute(webRequest, messageSource.getMessage("error.badrequest", new Object[]{ex.getMessage()}, null)));
+    }
+
     @ExceptionHandler({ NotFound.class })
     protected ResponseEntity<Object> handleNotFound(
             Exception ex,
@@ -37,7 +49,7 @@ public class GlobalControllerAdvice {
         log.error("?? Error occurred while requesting URI={}, HTTP StatusCode={}, Exception={}, Message={}",
                 request.getRequestURI(), response.getStatus(), ex.getClass().getName(), ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(createErrorAttribute(webRequest, messageSource.getMessage("error.badrequest", null, null)));
+                .body(createErrorAttribute(webRequest, messageSource.getMessage("error.notfound", null, null)));
     }
 
     @ExceptionHandler({ BadJWSException.class })
