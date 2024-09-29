@@ -20,7 +20,7 @@ public class PlanQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Schedule> getScheduleList(String id, LocalDate date) {
+    public List<Schedule> getScheduleListByDate(String id, LocalDate date) {
         return queryFactory.selectFrom(schedule)
                 .where(schedule.plan.id.eq(Long.parseLong(id))
                         .and(schedule.scheduleDate.eq(date)))
@@ -54,5 +54,19 @@ public class PlanQueryRepository {
                         .and(plan.startDate.year().eq(LocalDate.now().getYear()))
                 )
                 .fetchCount();
+    }
+
+    public Plan getActivePlan(String userId) {
+        return queryFactory.selectFrom(plan)
+                .where((plan.startDate.before(LocalDate.now()).or(plan.startDate.eq(LocalDate.now())))
+                        .and(plan.endDate.after(LocalDate.now()).or(plan.endDate.eq(LocalDate.now()))
+                                .and(plan.user.email.eq(userId))))
+                .fetchOne();
+    }
+
+    public List<Schedule> getScheduleListByPlanId(Long id) {
+        return queryFactory.selectFrom(schedule)
+                .where(schedule.plan.id.eq(id))
+                .fetch();
     }
 }

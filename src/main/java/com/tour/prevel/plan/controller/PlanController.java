@@ -1,9 +1,6 @@
 package com.tour.prevel.plan.controller;
 
-import com.tour.prevel.plan.dto.PlanHistoryResponse;
-import com.tour.prevel.plan.dto.RecommandPlanResponse;
-import com.tour.prevel.plan.dto.CreatePlanRequest;
-import com.tour.prevel.plan.dto.ScheduleResponse;
+import com.tour.prevel.plan.dto.*;
 import com.tour.prevel.plan.service.PlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +20,14 @@ public class PlanController {
     private final PlanService planService;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public PlanDetailResponse getPlanDetail(
+            Authentication auth
+    ) {
+        return planService.getPlanDetail(auth.getName());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/onboarding")
     public void createPlan(
             @RequestBody @Valid CreatePlanRequest request,
@@ -37,7 +42,7 @@ public class PlanController {
             @PathVariable String id,
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
-        return planService.getScheduleList(id, date);
+        return planService.getScheduleListByDate(id, date);
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -2,13 +2,11 @@ package com.tour.prevel.plan.service.impl;
 
 import com.tour.prevel.auth.domain.User;
 import com.tour.prevel.auth.repository.AuthRepository;
-import com.tour.prevel.plan.dto.PlanHistoryResponse;
-import com.tour.prevel.plan.dto.RecommandPlanResponse;
+import com.tour.prevel.global.exception.NotFound;
+import com.tour.prevel.plan.dto.*;
 import com.tour.prevel.plan.domain.Plan;
 import com.tour.prevel.plan.domain.PlanImage;
 import com.tour.prevel.plan.domain.PlanStatus;
-import com.tour.prevel.plan.dto.CreatePlanRequest;
-import com.tour.prevel.plan.dto.ScheduleResponse;
 import com.tour.prevel.plan.mapper.PlanMapper;
 import com.tour.prevel.plan.repository.PlanImageRepository;
 import com.tour.prevel.plan.repository.PlanQueryRepository;
@@ -54,8 +52,8 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<ScheduleResponse> getScheduleList(String id, LocalDate date) {
-        return planMapper.toScheduleResponseList(planQueryRepository.getScheduleList(id, date));
+    public List<ScheduleResponse> getScheduleListByDate(String id, LocalDate date) {
+        return planMapper.toScheduleResponseList(planQueryRepository.getScheduleListByDate(id, date));
     }
 
     @Override
@@ -71,12 +69,29 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public PlanHistoryResponse getPlanRecord(Long id, String name) {
-        Plan plan = planRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 계획이 없습니다."));
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new NotFound());
         return planMapper.toPlanHistoryResponse(plan);
     }
 
     @Override
     public int getPlanCount(String userId) {
         return planQueryRepository.getPlanCount(userId);
+    }
+
+    @Override
+    public PlanDetailResponse getPlanDetail(String userId) {
+        Plan activePlan = planQueryRepository.getActivePlan(userId);
+
+        if (activePlan == null) {
+            return null;
+        }
+
+        List<ScheduleResponse> scheduleList = planMapper.toScheduleResponseList(
+                planQueryRepository.getScheduleListByPlanId(activePlan.getId()));
+
+        return PlanDetailResponse.builder()
+                .planId(activePlan.getId())
+                .schedules(scheduleList)
+                .build();
     }
 }

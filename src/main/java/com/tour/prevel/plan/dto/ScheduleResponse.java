@@ -8,6 +8,7 @@ import java.time.LocalDate;
 
 @Builder
 public record ScheduleResponse(
+        String id,
         String category,
         String title,
         String description,
