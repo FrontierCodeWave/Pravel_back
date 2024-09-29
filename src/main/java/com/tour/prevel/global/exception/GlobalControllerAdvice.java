@@ -36,7 +36,7 @@ public class GlobalControllerAdvice {
     ) {
         log.error("?? Error occurred while requesting URI={}, HTTP StatusCode={}, Exception={}, Message={}",
                 request.getRequestURI(), response.getStatus(), ex.getClass().getName(), ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(createErrorAttribute(webRequest, messageSource.getMessage("error.badrequest", null, null)));
     }
 
