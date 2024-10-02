@@ -10,5 +10,7 @@ import java.util.List;
 public class PlanDetailResponse {
 
     private long planId;
+    private String startDate;
+    private String endDate;
     private List<ScheduleResponse> schedules;
 }

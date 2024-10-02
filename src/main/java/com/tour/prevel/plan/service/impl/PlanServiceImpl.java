@@ -90,6 +90,8 @@ public class PlanServiceImpl implements PlanService {
 
         return PlanDetailResponse.builder()
                 .planId(activePlan.getId())
+                .startDate(activePlan.getStartDate().toString())
+                .endDate(activePlan.getEndDate().toString())
                 .schedules(scheduleList)
                 .build();
     }
