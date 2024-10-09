@@ -2,8 +2,6 @@ package com.tour.prevel.plan.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tour.prevel.plan.domain.Plan;
-import com.tour.prevel.plan.domain.Schedule;
-import com.tour.prevel.plan.dto.CreateScheduleRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.tour.prevel.plan.domain.QSchedule.schedule;
 import static com.tour.prevel.plan.domain.QPlan.plan;
 
 @Repository
