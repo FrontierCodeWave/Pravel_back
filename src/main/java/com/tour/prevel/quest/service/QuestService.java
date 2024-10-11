@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface QuestService {
     List<QuestResponse> getQuestListByLocation(Position position, String userId);
-    void startQuest(Long questId, StartQuestRequest request, String userId);
+    void startQuest(Long questId, StartQuestRequest request, String userI);
+    QuestResponse getQuest(Long questIdd);
 }

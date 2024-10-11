@@ -40,6 +40,12 @@ public class QuestServiceImpl implements QuestService {
     }
 
     @Override
+    public QuestResponse getQuest(Long questId) {
+        return questMapper.toQuestResponse(questRepository.findById(questId)
+                .orElseThrow(() -> new IllegalArgumentException("Quest not found")));
+    }
+
+    @Override
     public void startQuest(Long questId, StartQuestRequest request, String userId) {
         Quest quest = questRepository.findById(questId)
                 .orElseThrow(() -> new IllegalArgumentException("Quest not found"));

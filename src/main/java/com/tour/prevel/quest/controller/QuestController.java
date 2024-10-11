@@ -29,6 +29,15 @@ public class QuestController {
         return questService.getQuestListByLocation(position, auth.getName());
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{questId}")
+    public QuestResponse getQuest(
+            @PathVariable Long questId
+    ) {
+        QuestResponse quest = questService.getQuest(questId);
+        return quest;
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("{questId}")
     public void startQuest(

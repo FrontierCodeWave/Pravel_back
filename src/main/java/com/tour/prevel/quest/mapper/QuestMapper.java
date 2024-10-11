@@ -10,4 +10,5 @@ import java.util.List;
 public interface QuestMapper {
 
     List<QuestResponse> toQuestResponses(List<Quest> quest);
+    QuestResponse toQuestResponse(Quest quest);
 }
