@@ -51,7 +51,7 @@ public class PlanQueryRepository {
                 .where((plan.startDate.before(LocalDate.now()).or(plan.startDate.eq(LocalDate.now())))
                         .and(plan.endDate.after(LocalDate.now()).or(plan.endDate.eq(LocalDate.now()))
                                 .and(plan.user.email.eq(userId))))
-                .fetchOne();
+                .fetchFirst();
     }
 
 }
