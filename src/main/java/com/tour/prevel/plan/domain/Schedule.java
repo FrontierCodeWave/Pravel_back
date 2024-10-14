@@ -20,9 +20,13 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private ScheduleCategory category;
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
     private int scheduleOrder;
     private LocalDate scheduleDate;
+
+    @Column(columnDefinition = "TEXT")
     private String thumbnail;
 
     @ManyToOne(fetch = FetchType.LAZY)
