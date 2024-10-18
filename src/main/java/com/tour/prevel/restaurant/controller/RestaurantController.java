@@ -6,6 +6,9 @@ import com.tour.prevel.restaurant.dto.RestaurantListResponse;
 import com.tour.prevel.restaurant.service.RestaurantService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,17 +27,9 @@ public class RestaurantController {
     @ApiOperation("맛집 리스트 조회(버튼)")
     public RestaurantListResponse getTourList(
             @RequestBody RestaurantListRequest request,
+            @PageableDefault(direction = Sort.Direction.DESC, sort = "id") Pageable pageNo,
             Authentication auth) {
-        return restaurantService.getRestaurantList(request, auth.getName());
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/search")
-    @ApiOperation("맛집 리스트 조회(검색)")
-    public RestaurantListResponse getTourListBySearch(
-            @RequestBody String search,
-            Authentication auth) {
-        return restaurantService.getRestaurantListBySearch(search, auth.getName());
+        return restaurantService.getRestaurantList(request, pageNo, auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)

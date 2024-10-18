@@ -4,6 +4,8 @@ import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tour.service.TourService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -21,18 +23,10 @@ public class TourController {
     @ApiOperation("관광지 리스트 조회(버튼)")
     public TourListResponse getTourList(
             @RequestBody TourListRequest request,
+            @PageableDefault(direction = Sort.Direction.DESC, sort = "id") Pageable pageNo,
             Authentication auth
     ) {
-        return tourService.getTourList(request, auth.getName());
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/search")
-    @ApiOperation("관광지 리스트 조회(검색)")
-    public TourListResponse getTourListBySearch(
-            @RequestBody String search,
-            Authentication auth) {
-        return tourService.getTourListBySearch(search, auth.getName());
+        return tourService.getTourList(request, pageNo, auth.getName());
     }
 
     @ResponseStatus(HttpStatus.OK)

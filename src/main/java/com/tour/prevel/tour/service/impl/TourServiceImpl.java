@@ -2,11 +2,15 @@ package com.tour.prevel.tour.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
 import com.tour.prevel.review.service.ReviewService;
+import com.tour.prevel.tour.domain.Tour;
+import com.tour.prevel.tour.domain.TourImage;
 import com.tour.prevel.tour.dto.*;
+import com.tour.prevel.tour.repository.TourImageRepository;
+import com.tour.prevel.tour.repository.TourQueryRepository;
+import com.tour.prevel.tour.repository.TourRepository;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
 import com.tour.prevel.tourapi.domain.TourApiUrl;
 import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
-import com.tour.prevel.tourapi.dto.TourApiImageListRequest;
 import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
 import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
@@ -22,33 +26,28 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TourServiceImpl implements TourService {
 
-
     private final TourMapper tourMapper;
     private final TourApiService tourApiService;
     private final ReviewService reviewService;
     private final WishService wishService;
 
-    @Override
-    public TourListResponse getTourList(TourListRequest request, String userId) {
-        String queryParameters = tourApiService.createQueryParameters(
-                ListParamsDto.builder()
-                        .mapX(request.x())
-                        .mapY(request.y())
-                        .radius(request.radius())
-                        .markers(request.markers())
-                        .pageNo(request.pageNo())
-                        .contentTypeId(ContentTypeId.TOUR)
-                        .build());
+    private final TourRepository tourRepository;
+    private final TourImageRepository tourImageRepository;
 
-        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.LIST, queryParameters).getResponse().getBody();
-        List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());
+    private final TourQueryRepository tourQueryRepository;
+
+    @Override
+    public TourListResponse getTourList(TourListRequest request, Pageable pageNo, String userId) {
+        List<Tour> tours = tourQueryRepository.findTourWithinRadius(request.getX(), request.getY(), request.getRadius(), pageNo, ContentTypeId.TOUR);
+
+        List<TourResponse> tourResponses = tourMapper.toTourListResponses(tours);
         List<TourResponse> list = tourResponses.stream()
                 .map((response) -> {
                     response.setCategory("관광");
@@ -58,40 +57,11 @@ public class TourServiceImpl implements TourService {
 
         return TourListResponse.builder()
                 .list(list)
-                .totalCount(body.getTotalCount())
+                .totalCount(tourQueryRepository.findTourCountWithinRadius(request.getX(), request.getY(), request.getRadius(), ContentTypeId.TOUR))
                 .build();
     }
 
     private <T extends TourCommonResponse> T addInform(T tourResponse, String userId) {
-        TourApiDetailIntroResponse.Item item;
-        try {
-            item = tourApiService.fetchDetailIntro(
-                    TourApiUrl.DETAIL_INTRO,
-                    tourApiService.createQueryParameters(tourResponse.getContentId(), tourResponse.getContentTypeId())
-            ).getResponse().getBody().getItems().getItem().get(0);
-
-            // 영업시간
-            switch (item.getContenttypeid()) {
-                case "12":
-                    tourResponse.setPlaytime(item.getUsetime());
-                    break;
-                case "14":
-                    tourResponse.setPlaytime(item.getUsetimeculture());
-                    break;
-                case "15":
-                    tourResponse.setPlaytime(item.getPlaytime());
-                    break;
-                case "25":
-                    tourResponse.setPlaytime(item.getTaketime());
-                    break;
-                case "28":
-                    tourResponse.setPlaytime(item.getOpentime());
-                    break;
-            }
-        } catch (Exception e) {
-            log.error("Failed to fetch tour detail from API", e);
-            tourResponse.setPlaytime(null);
-        }
 
         // 평점
         double rating = reviewService.getRatingById(tourResponse.getContentId());
@@ -109,59 +79,42 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public TourListResponse getTourListBySearch(String search, String userId) {
-        String queryParameters = tourApiService.createQueryParameters(URLEncoder.encode(search), ContentTypeId.TOUR);
-
-        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.SEARCH_LIST, queryParameters).getResponse().getBody();
-        List<TourResponse> tourResponses = tourMapper.toTourListResponse(body.getItems().getItem());
-        List<TourResponse> list = tourResponses.stream()
-                .map((response) -> addInform(response, userId))
-                .toList();
-
-        return TourListResponse.builder()
-                .list(list)
-                .totalCount(body.getTotalCount())
-                .build();
-    }
-
-    @Override
     public TourDetailResponse getTour(int contentId, String userId) {
-        String queryParameters = tourApiService.createQueryParameters(contentId);
+        TourDetailResponse tourDetailResponse = tourMapper.toTourDetailResponse(
+                tourRepository.findByContentId(String.valueOf(contentId)).orElseThrow(() -> new NotFound())
+        );
 
-        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
-                .getResponse().getBody();
-        List<TourDetailResponse> tourResponses = tourMapper.toTourDetailListResponse(body.getItems().getItem());
-        TourDetailResponse tourDetailResponse = tourResponses.stream().findFirst()
-                .orElseThrow(() -> new NotFound());
         return addInform(tourDetailResponse, userId);
     }
 
     @Override
     public TourImageListResponse getTourImage(String contentId, int page) {
-        String queryParameters = tourApiService.createQueryParameters(contentId, page);
-
-        TourApiImageListResponse.Body body = tourApiService.fetchImageList(TourApiUrl.IMAGE_LIST, queryParameters)
-                .getResponse().getBody();
-        List<String> list = body.getItems().getItem().stream().map(image -> image.getOriginimgurl())
+        String tourImage = tourQueryRepository.findTourImageById(contentId);
+        List<String> list = Arrays.stream(tourImage.split(","))
+                .filter((image) -> !image.isEmpty())
                 .toList();
+
+        int start = (page - 1) * 9;
+        int end = Math.min(start + 9, list.size());
+        list = list.subList(start, end);
+
         return TourImageListResponse.builder()
                 .list(list)
-                .totalCount(body.getTotalCount())
+                .totalCount(list.size())
                 .build();
     }
 
     @Override
     public List<KeywordResponse> getKeywordList(String keyword) {
-        String tourQueryParameters = tourApiService.createQueryParameters(URLEncoder.encode(keyword), ContentTypeId.TOUR);
-        String foodQueryParameters = tourApiService.createQueryParameters(URLEncoder.encode(keyword), ContentTypeId.RESTAURANT);
-
-        String[] params = {tourQueryParameters, foodQueryParameters};
+        ContentTypeId[] params = {ContentTypeId.TOUR, ContentTypeId.RESTAURANT};
         return Arrays.stream(params).toList().stream()
-                .map((param) ->
-                        tourApiService.fetchList(TourApiUrl.SEARCH_LIST, param).getResponse().getBody())
-                .map((body) ->
-                        tourMapper.toKeywordListResponse(body.getItems().getItem()))
+                .map((contentTypeId) ->
+                        tourQueryRepository.findTourByKeyword(keyword, contentTypeId))
+                .map((tours) ->
+                        tourMapper.toKeywordListResponses(tours))
                 .flatMap(List::stream)
                 .toList();
     }
+
+
 }

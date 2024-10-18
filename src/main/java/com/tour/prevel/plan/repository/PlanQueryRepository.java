@@ -48,9 +48,9 @@ public class PlanQueryRepository {
 
     public Plan getActivePlan(String userId) {
         return queryFactory.selectFrom(plan)
-                .where((plan.startDate.before(LocalDate.now()).or(plan.startDate.eq(LocalDate.now())))
-                        .and(plan.endDate.after(LocalDate.now()).or(plan.endDate.eq(LocalDate.now()))
-                                .and(plan.user.email.eq(userId))))
+                .where(plan.user.email.eq(userId)
+                        .and(plan.endDate.goe(LocalDate.now())))
+                .orderBy(plan.endDate.desc())
                 .fetchFirst();
     }
 
