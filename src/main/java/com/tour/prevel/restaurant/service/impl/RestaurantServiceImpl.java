@@ -10,7 +10,6 @@ import com.tour.prevel.tour.repository.TourImageRepository;
 import com.tour.prevel.tour.repository.TourQueryRepository;
 import com.tour.prevel.tour.repository.TourRepository;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
-import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ import java.util.*;
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantMapper restaurantMapper;
-    private final TourApiService tourApiService;
     private final ReviewService reviewService;
     private final WishService wishService;
 
