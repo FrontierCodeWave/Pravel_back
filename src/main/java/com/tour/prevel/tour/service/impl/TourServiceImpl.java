@@ -3,18 +3,11 @@ package com.tour.prevel.tour.service.impl;
 import com.tour.prevel.global.exception.NotFound;
 import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tour.domain.Tour;
-import com.tour.prevel.tour.domain.TourImage;
 import com.tour.prevel.tour.dto.*;
 import com.tour.prevel.tour.repository.TourImageRepository;
 import com.tour.prevel.tour.repository.TourQueryRepository;
 import com.tour.prevel.tour.repository.TourRepository;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
-import com.tour.prevel.tourapi.domain.TourApiUrl;
-import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
-import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
-import com.tour.prevel.tourapi.dto.params.ListParamsDto;
-import com.tour.prevel.tourapi.service.TourApiService;
-import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import com.tour.prevel.tour.mapper.TourMapper;
 import com.tour.prevel.tour.service.TourService;
 import com.tour.prevel.wish.service.WishService;
@@ -23,10 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +25,6 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
 
     private final TourMapper tourMapper;
-    private final TourApiService tourApiService;
     private final ReviewService reviewService;
     private final WishService wishService;
 

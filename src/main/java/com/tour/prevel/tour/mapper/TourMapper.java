@@ -5,7 +5,6 @@ import com.tour.prevel.tour.dto.KeywordResponse;
 import com.tour.prevel.tour.dto.TourDetailResponse;
 import com.tour.prevel.tour.dto.TourResponse;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
-import com.tour.prevel.tourapi.dto.TourApiListResponse;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -37,12 +36,4 @@ public interface TourMapper {
         return contentTypeId.equals(ContentTypeId.TOUR.getId())
                 ? ContentTypeId.TOUR.getId() : ContentTypeId.RESTAURANT.getId();
     }
-
-    /*삭제 예정*/
-    @Mapping(target = "thumbnail", source = "firstimage")
-    @Mapping(target = "contentId", source = "contentid")
-    @Mapping(target = "mapX", source = "mapx")
-    @Mapping(target = "mapY", source = "mapy")
-    @Mapping(target = "contentTypeId", source = "contenttypeid")
-    Tour toTour(TourApiListResponse.Item item);
 }

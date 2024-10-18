@@ -1,25 +1,15 @@
 package com.tour.prevel.restaurant.service.impl;
 
 import com.tour.prevel.global.exception.NotFound;
-import com.tour.prevel.restaurant.domain.FoodCategory;
 import com.tour.prevel.restaurant.dto.*;
 import com.tour.prevel.restaurant.mapper.RestaurantMapper;
 import com.tour.prevel.restaurant.service.RestaurantService;
 import com.tour.prevel.review.service.ReviewService;
 import com.tour.prevel.tour.domain.Tour;
-import com.tour.prevel.tour.domain.TourImage;
-import com.tour.prevel.tour.dto.TourDetailResponse;
-import com.tour.prevel.tour.dto.TourResponse;
-import com.tour.prevel.tour.mapper.TourMapper;
 import com.tour.prevel.tour.repository.TourImageRepository;
 import com.tour.prevel.tour.repository.TourQueryRepository;
 import com.tour.prevel.tour.repository.TourRepository;
 import com.tour.prevel.tourapi.domain.ContentTypeId;
-import com.tour.prevel.tourapi.domain.TourApiUrl;
-import com.tour.prevel.tourapi.dto.TourApiDetailIntroResponse;
-import com.tour.prevel.tourapi.dto.TourApiImageListResponse;
-import com.tour.prevel.tourapi.dto.TourApiListResponse;
-import com.tour.prevel.tourapi.dto.params.ListParamsDto;
 import com.tour.prevel.tourapi.service.TourApiService;
 import com.tour.prevel.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -83,95 +72,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         RestaurantDetailResponse restaurantDetailResponse = restaurantMapper.toRestaurantDetailResponse(
                 tourRepository.findByContentId(String.valueOf(contentId)).orElseThrow(() -> new NotFound())
         );
-
-        return addInform(restaurantDetailResponse, userId);
-    }
-
-    private String extractCategory(String overview ) {
-        Map<String, FoodCategory> categoryMap = new HashMap<>();
-        categoryMap.put("양식", FoodCategory.WESTERN);
-        categoryMap.put("일식", FoodCategory.JAPANESE);
-        categoryMap.put("한식", FoodCategory.KOREAN);
-        categoryMap.put("한정식", FoodCategory.KOREAN);
-        categoryMap.put("중식", FoodCategory.CHINESE);
-        categoryMap.put("카페", FoodCategory.CAFE);
-
-        try {
-            for (String category : categoryMap.keySet()) {
-                if (overview.contains(category)) {
-                    return categoryMap.get(category).getCategory();
-                }
-            }
-        } catch (Exception e) {}
-
-        return "기타";
-    }
-
-    private <T extends RestaurantCommonResponse> T addInform(T restaurantResponse, String userId) {
-        TourApiDetailIntroResponse.Item item;
-        try {
-            item = tourApiService.fetchDetailIntro(
-                    TourApiUrl.DETAIL_INTRO,
-                    tourApiService.createQueryParameters(restaurantResponse.getContentId(), ContentTypeId.RESTAURANT.getId())
-            ).getResponse().getBody().getItems().getItem().get(0);
-
-            restaurantResponse.setPlaytime(item.getOpentimefood());
-
-            List<String> list = Arrays.asList(item.getTreatmenu().split("[/,]\\s*|\\s*[/,]"))
-                    .stream().map((food) -> food
-                            .replaceAll("\\s*등$", "")
-                            .replaceAll("\\s*외$", ""))
-                            .filter((food) -> !food.isEmpty())
-                    .toList();
-            restaurantResponse.setHashtags(list);
-        } catch (Exception e) {
-            restaurantResponse.setPlaytime(null);
-            restaurantResponse.setHashtags(Collections.emptyList());
-            log.error("Failed to fetch restaurant detail from API", e);
-        }
-
-        // 평점
-        double rating = reviewService.getRatingById(restaurantResponse.getContentId());
-        restaurantResponse.setRating(rating);
-
-        // 리뷰수
-        int review = reviewService.getReviewCountById(restaurantResponse.getContentId());
-        restaurantResponse.setReview(review);
-
-        // 위시리스트 여부
-        boolean wished = wishService.isWished(userId, restaurantResponse.getContentId());
-        restaurantResponse.setWish(wished);
-
-        return restaurantResponse;
-    }
-
-    @Override
-    public RestaurantListResponse getRestaurantListBySearch(String search, String userId) {
-        String queryParameters = tourApiService.createQueryParameters(URLEncoder.encode(search), ContentTypeId.RESTAURANT);
-
-        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.SEARCH_LIST, queryParameters).getResponse().getBody();
-        List<RestaurantResponse> restaurantListResponse = restaurantMapper.toRestaurantListResponse(body.getItems().getItem());
-        List<RestaurantResponse> list = restaurantListResponse.stream()
-                .map((response) -> addInform(response, userId))
-                .map((response) -> fetchCategory(response))
-                .toList();
-
-        return RestaurantListResponse.builder()
-                .list(list)
-                .totalCount(body.getTotalCount())
-                .build();
-    }
-
-    @Override
-    public RestaurantDetailResponse getRestaurant(int contentId, String userId) {
-        String queryParameters = tourApiService.createQueryParameters(contentId);
-
-        TourApiListResponse.Body body = tourApiService.fetchList(TourApiUrl.DETAIL, queryParameters)
-                .getResponse().getBody();
-        List<RestaurantDetailResponse> restaurantResponses = restaurantMapper.toRestaurantDetailListResponse(body.getItems().getItem());
-        RestaurantDetailResponse restaurantDetailResponse = restaurantResponses.stream().findFirst()
-                .orElseThrow(() -> new NotFound());
-        restaurantDetailResponse.setCategory(extractCategory(restaurantDetailResponse.getCategory()));
 
         return addInform(restaurantDetailResponse, userId);
     }
