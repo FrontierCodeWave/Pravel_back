@@ -29,6 +29,7 @@ public interface TourMapper {
     @Named("toTourResponse")
     @Mapping(target = "lat", source = "mapX")
     @Mapping(target = "lon", source = "mapY")
+    @Mapping(target = "address", expression = "java((tour.getAddr1() + \" \" + tour.getAddr2()).trim())")
     TourResponse toTourResponse(Tour tour);
 
     @Named("getCategory")
