@@ -12,5 +12,11 @@ public class PlanDetailResponse {
     private long planId;
     private String startDate;
     private String endDate;
+    private String startPoint;
+    private String endPoint;
+    private String location;
+    private int adult;
+    private int child;
+    private String url;
     private List<ScheduleResponse> schedules;
 }

@@ -20,6 +20,14 @@ public class PlanController {
     private final PlanService planService;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/total")
+    public int getPlanTotal(
+            Authentication auth
+    ) {
+        return planService.getPlanTotal(auth.getName());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public PlanDetailResponse getPlanDetail(
             Authentication auth
@@ -83,5 +91,31 @@ public class PlanController {
             Authentication auth
     ) {
         return planService.getPlanCount(auth.getName());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/future")
+    public List<PlanFutureResponse> getFuturePlan(
+            Authentication auth
+    ) {
+        return planService.getFuturePlan(auth.getName());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("{id}")
+    public void deletePlan(
+            Authentication auth,
+            @PathVariable Long id
+    ) {
+        planService.deletePlan(auth.getName(), id);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("{id}")
+    public void activePlan(
+            Authentication auth,
+            @PathVariable Long id
+    ) {
+        planService.activePlan(auth.getName(), id);
     }
 }

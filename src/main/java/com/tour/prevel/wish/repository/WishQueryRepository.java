@@ -1,12 +1,16 @@
 package com.tour.prevel.wish.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.tour.prevel.tour.domain.Tour;
 import com.tour.prevel.tourapi.domain.ContentCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.tour.prevel.wish.domain.QWish.wish;
+import static com.tour.prevel.tour.domain.QTour.tour;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,5 +46,12 @@ public class WishQueryRepository {
                 .where(wish.contentId.eq(contentId)
                         .and(wish.user.email.eq(userId)))
                 .execute();
+    }
+
+    public List<Tour> getWishList(String userId) {
+         return queryFactory.select(tour)
+                .from(tour, wish)
+                .where(wish.user.email.eq(userId).and(tour.contentId.eq(wish.contentId)))
+                .stream().toList();
     }
 }

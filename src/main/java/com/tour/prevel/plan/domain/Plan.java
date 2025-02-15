@@ -40,4 +40,8 @@ public class Plan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PlanImage planImage;
+
+    public void updateStatus(PlanStatus status) {
+        this.status = status;
+    }
 }

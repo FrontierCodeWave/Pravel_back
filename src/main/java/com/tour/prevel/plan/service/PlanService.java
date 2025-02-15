@@ -15,4 +15,8 @@ public interface PlanService {
     int getPlanCount(String userId);
     PlanDetailResponse getPlanDetail(String userId);
     void createScheudle(@Valid CreateScheduleRequest request);
+    List<PlanFutureResponse> getFuturePlan(String userId);
+    void deletePlan(String userId, Long id);
+    void activePlan(String userId, Long id);
+    int getPlanTotal(String name);
 }

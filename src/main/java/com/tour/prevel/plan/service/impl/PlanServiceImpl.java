@@ -40,6 +40,8 @@ public class PlanServiceImpl implements PlanService {
                 .endDate(LocalDate.parse(request.endDate()))
                 .status(PlanStatus.REVISION)
                 .planImage(getRandomPlanImage())
+                .startPoint(request.startPoint())
+                .endPoint(request.endPoint())
                 .user(user)
                 .build());
     }
@@ -93,6 +95,12 @@ public class PlanServiceImpl implements PlanService {
                 .startDate(activePlan.getStartDate().toString())
                 .endDate(activePlan.getEndDate().toString())
                 .schedules(scheduleList)
+                .startPoint(activePlan.getStartPoint())
+                .endPoint(activePlan.getEndPoint())
+                .location(activePlan.getLocation())
+                .adult(activePlan.getAdult())
+                .child(activePlan.getChild())
+                .url(activePlan.getPlanImage().getUrl())
                 .build();
     }
 
@@ -115,5 +123,40 @@ public class PlanServiceImpl implements PlanService {
                         .scheduleDate(LocalDate.parse(request.getDate()))
                         .scheduleOrder(scheduleQueryRepository.getLastOrder(Long.valueOf(request.getPlanId()), request.getDate()) + 1)
                 .build());
+    }
+
+    @Override
+    public List<PlanFutureResponse> getFuturePlan(String userId) {
+        return planMapper.toPlanFutureResponseList(planQueryRepository.getFuturePlan(userId));
+    }
+
+    @Override
+    public void deletePlan(String userId, Long id) {
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new NotFound());
+
+        if (!plan.getUser().getEmail().equals(userId)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+
+        planRepository.delete(plan);
+    }
+
+    @Override
+    public void activePlan(String userId, Long id) {
+        planQueryRepository.deactivatePlan(userId, id);
+
+        Plan plan = planRepository.findById(id).orElseThrow(() -> new NotFound());
+
+        if (!plan.getUser().getEmail().equals(userId)) {
+            throw new IllegalArgumentException("활성화 권한이 없습니다.");
+        }
+
+        plan.updateStatus(PlanStatus.PROGRESS);
+        planRepository.save(plan);
+    }
+
+    @Override
+    public int getPlanTotal(String name) {
+        return planQueryRepository.getPlanList(name).size();
     }
 }

@@ -1,5 +1,6 @@
 package com.tour.prevel.plan.mapper;
 
+import com.tour.prevel.plan.dto.PlanFutureResponse;
 import com.tour.prevel.plan.dto.PlanHistoryResponse;
 import com.tour.prevel.plan.dto.RecommandPlanResponse;
 import com.tour.prevel.plan.domain.Plan;
@@ -42,4 +43,11 @@ public interface PlanMapper {
     @Named("toPlanHistoryResponse")
     @Mapping(target = "url", source = "plan.planImage", qualifiedByName = "thumnailToImage")
     PlanHistoryResponse toPlanHistoryResponse(Plan plan);
+
+    @IterableMapping(qualifiedByName = "toPlanFutureResponse")
+    List<PlanFutureResponse> toPlanFutureResponseList(List<Plan> planList);
+
+    @Named("toPlanFutureResponse")
+    @Mapping(target = "url", source = "plan.planImage", qualifiedByName = "thumnailToImage")
+    PlanFutureResponse toPlanFutureResponse(Plan plan);
 }

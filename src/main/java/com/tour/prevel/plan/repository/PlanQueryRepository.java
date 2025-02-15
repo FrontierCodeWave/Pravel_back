@@ -1,7 +1,9 @@
 package com.tour.prevel.plan.repository;
 
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tour.prevel.plan.domain.Plan;
+import com.tour.prevel.plan.domain.PlanStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,8 +52,31 @@ public class PlanQueryRepository {
         return queryFactory.selectFrom(plan)
                 .where(plan.user.email.eq(userId)
                         .and(plan.endDate.goe(LocalDate.now())))
-                .orderBy(plan.endDate.desc())
+                .orderBy(
+                        new CaseBuilder()
+                                .when(plan.status.eq(PlanStatus.PROGRESS)).then(1)
+                                .otherwise(2).asc(),
+                        // endDate가 가까운 순으로 정렬
+                        plan.endDate.asc()
+                )
                 .fetchFirst();
     }
 
+    public List<Plan> getFuturePlan(String userId) {
+        return queryFactory.selectFrom(plan)
+                .where(plan.user.email.eq(userId)
+                        .and(plan.endDate.goe(LocalDate.now())))
+                .orderBy(plan.startDate.asc(), plan.id.asc())
+                .fetch();
+    }
+
+    @Transactional
+    public void deactivatePlan(String userId, Long id) {
+        queryFactory.update(plan)
+                .set(plan.status, PlanStatus.REVISION)
+                .where(plan.user.email.eq(userId)
+                        .and(plan.status.eq(PlanStatus.PROGRESS))
+                        .and(plan.id.ne(id)))
+                .execute();
+    }
 }
