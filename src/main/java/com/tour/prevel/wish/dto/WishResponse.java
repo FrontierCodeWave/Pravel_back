@@ -11,4 +11,5 @@ public class WishResponse {
     private String title;
     private String thumbnail;
     private String category;
+    private String contentTypeId;
 }
