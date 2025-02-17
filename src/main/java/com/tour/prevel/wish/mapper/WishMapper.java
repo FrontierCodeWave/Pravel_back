@@ -21,6 +21,6 @@ public interface WishMapper {
     @Named("getCategory")
     public static String getCategory(String contentTypeId) {
         return contentTypeId.equals(ContentTypeId.TOUR.getId())
-                ? "TOUR" : "FOOD";
+                ? "관광" : "맛집";
     }
 }
