@@ -23,7 +23,7 @@ public class ScheduleQueryRepository {
         return queryFactory.selectFrom(schedule)
                 .where(schedule.plan.id.eq(Long.parseLong(planId))
                         .and(schedule.scheduleDate.eq(date)))
-                .orderBy(schedule.scheduleOrder.desc())
+                .orderBy(schedule.scheduleOrder.asc())
                 .fetch();
     }
 
